@@ -1,0 +1,332 @@
+#floatingWindow {
+   --form-w: 300px;
+   --s: 8px;
+   position: fixed;
+   left: 0;
+   top: 0;
+   width: 100svw;
+   height: 100%;
+   display: none;
+   background: light-dark(#fff, #000);
+   place-items: center;
+   z-index: 10;
+   opacity: 0;
+   transition-property: overlay display opacity;
+   transition-duration: 300ms;
+   transition-behavior: allow-discrete;
+
+   touch-action: none;
+   -webkit-touch-callout: none;
+   -ms-touch-action: none;
+   -ms-touch-select: none;
+
+   &.active {
+      display: grid;
+      opacity: 1;
+      
+      .center .wave {
+         animation: wave 1s linear infinite;
+         animation-delay: calc(var(--delay) * 1s);
+      }
+
+      @starting-style {
+         opacity: 0;
+      }
+   }
+
+   /* -------------------------------------------------- 
+                             form
+   -------------------------------------------------- */
+   .form {
+      position: relative;
+      width: var(--form-w);
+      height: auto ;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: calc(var(--s) * 2);
+      border: solid 1px light-dark(#000, #fff);
+      background: light-dark(#ddd, #222);
+      border-radius: var(--s);
+
+      &.active {
+         display: flex;
+      }
+
+      form {
+         position: relative;
+         width: 100%;
+         height: auto;
+         display: flex;
+         justify-content: center;
+         border-radius: inherit;
+         align-items: center;
+         flex-direction: column;
+         gap: calc(var(--s) * 2);
+
+
+         .title {
+            position: relative;
+            width: 100%;
+            height: calc(var(--s) * 6);
+            padding: var(--s);
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+
+            span {
+               position: absolute;
+               opacity: 1;
+               font-family: f9b;
+            }
+         }
+
+         &.signup .title span:last-child,
+         &.signin .title span:first-child {
+            opacity: 0;
+         }
+
+         .form-input {
+            --icon-s: calc(var(--s) * 3.5);
+            position: relative;
+            width: 100%;
+            height: calc(var(--s) * 6);
+            padding: calc(var(--s) * 0.5);
+            border-radius: inherit;
+            border: solid 1px #000;
+            background: #fff;
+            box-shadow: inset 0 0 3px #000;
+            display: grid;
+            gap: 3px;
+            grid-template-columns: var(--icon-s) auto var(--icon-s);
+            
+            &.two {
+               grid-template-columns: var(--icon-s) auto;
+            }
+
+            i, input {
+               color: #000;
+            }
+
+            & > i {
+               position: relative;
+               width: 100%;
+               height: 100%;
+               display: grid;
+               place-items: center;
+               font-size: calc(var(--icon-s) * 0.7);
+            }
+
+            input {
+               position: relative;
+               width: 100%;
+               height: 100%;
+               outline: none;
+               border: none;
+               background: transparent;
+               font-size: calc(var(--icon-s) * 0.7);
+            }
+            
+            .eye {
+               position: relative;
+               width: 100%;
+               height: 100%;
+               display: grid;
+               place-items: center;
+
+               i {
+                  position: absolute;
+                  font-size: calc(var(--icon-s) * 0.7);
+                  opacity: 1;
+                  transition: 200ms opacity;
+               }
+            }
+
+            input[type="password"] + .eye i:last-child {
+               opacity: 0;   
+            }
+
+            input[type="text"] + .eye i:first-child {
+               opacity: 0;   
+            }
+         }
+
+         &.signin .form-input.confirm-pass {
+            display: none;
+         }
+
+         .switch {
+            position: relative;
+            text-align: center;
+
+            span {
+               display: block;
+
+               x {
+                  color: #008cff;
+               }
+            }
+         }
+
+         &.signup .switch span:last-child,
+         &.signin .switch span:first-child {
+            display: none;
+         }
+
+         .form-submit {
+            position: relative;
+            width: 100%;
+            height: auto;
+            display: grid;
+            place-items: center;
+            
+            button {
+               position: relative;
+               font-size: calc(var(--s) * 3);
+               padding: calc(var(--s) * 0.6) calc(var(--s) * 3);
+               border-radius: 5px;
+               font-family: f5b;
+               background: #0010c4;
+               color: #fff9;
+               box-shadow: 0 2px 5px #000;
+               border: none;
+               transition: 300ms background, 300ms color;
+               cursor: var(--cursor);
+
+               &:active {
+                  background: #0014f0;
+                  color: #fff;
+               }
+            }
+         }
+      }
+   }
+
+   /* -------------------------------------------------- 
+                             alert
+   -------------------------------------------------- */
+.alert {
+      position: relative;
+      width: var(--form-w);
+      height: auto ;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: calc(var(--s) * 2);
+      border: solid 1px light-dark(#000, #fff);
+      background: light-dark(#ddd, #222);
+      border-radius: var(--s);
+      gap: var(--s);
+
+      &.active {
+         display: flex;
+      }
+
+      p {
+         padding: 0 var(--s);
+         font-size: calc(var(--s) * 3);
+         text-transform: uppercase;
+         font-family: f9b;
+      }
+      #alertMessage {
+         position: relative;
+         height: auto;
+         font-family: Arial, Helvetica, sans-serif;
+         font-size: calc(var(--s) * 2);
+         padding: calc(var(--s) * 2);
+         text-align: center;
+         font-weight: 100;
+         text-wrap: wrap;
+         opacity: 0.8;
+      }
+      .buttons {
+         position: relative;
+         display: flex;
+         gap: calc(var(--s) * 2);
+         justify-content: center;
+         align-items: center;
+         user-select: none;
+         -webkit-user-select: none;
+         -moz-user-select: none;
+         
+         .btn {
+            padding: calc(var(--s) * 0.8) calc(var(--s) * 3);
+            position: relative;
+            font-size: calc(var(--s) * 2.4);
+            font-family: f5b;
+            border-radius: 5px;
+            color: light-dark(#fff, #000);
+            background: light-dark(#000, #fff);
+            border: solid 1px light-dark(#fff, #000);
+            cursor: pointer;
+
+            &:nth-child(2) {
+               display: none;
+
+               &.active {
+                  display: flex;
+               }
+            }
+   
+            &:hover {
+               background: light-dark(#000, #fff);
+            }
+         }
+      }
+   }
+
+   &:has( .alert.active) {
+      background: light-dark(#fff, #000);
+   }
+
+   /* -------------------------------------------------- 
+                        loading
+   -------------------------------------------------- */
+
+   .loading {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+
+      &.active {
+         display: flex;
+      }
+
+
+      .center {
+         position: absolute;
+         height: 100%;
+         height: 100%;
+         display: flex;
+         justify-content: center;
+         gap: 5svw;
+         align-items: center;
+   
+         .wave {
+            width: 8px;
+            height: 150px;
+            background: light-dark(#000, #fff);
+            border-radius: 20px;
+            transform: scale(0);
+         }
+         
+      }
+   }
+}
+
+@keyframes wave {
+   0% {
+      transform: scale(0);
+   }
+   50% {
+      transform: scale(1);
+   }
+   100% {
+      transform: scale(0);
+   }
+}

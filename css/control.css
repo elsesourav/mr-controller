@@ -1,0 +1,419 @@
+.controls {
+   position: relative;
+   width: 100%;
+}
+
+section {
+   --p: 5px;
+   position: relative;
+   width: 100%;
+   height: fit-content;
+   display: grid;
+   grid-template-columns: 1fr;
+   align-items: center;
+   animation: opacity linear 400ms;
+
+   &:not(:has( #autoComplete:checked)) .auto.manually-search-inputs,
+   &:has( #autoComplete:checked) .auto.auto-complete-inputs {
+      display: grid;
+      opacity: 1;
+
+      @starting-style {
+         opacity: 0;
+      }
+
+      & > * {
+         opacity: 1;
+
+         @starting-style {
+            opacity: 0;
+         }
+      }
+   }
+
+   & > .btn {
+      position: relative;
+      width: 100%;
+      height: calc(var(--s) * 4);
+      padding: var(--p);
+      display: grid;
+      place-items: center;
+      
+      button#updateButton {
+         position: relative;
+         width: 100%;
+         height: 100%;
+         border-radius: calc(var(--s) / 4);
+         border: none;
+         outline: none;
+         background: light-dark(var(--black), var(--white));
+         color: light-dark(var(--white), var(--black));
+         font-size: calc(var(--s) * 1.6);
+         font-weight: bold;
+         font-family: f1b;
+         border: solid 1px transparent;
+         cursor: var(--cursor);
+         transition: 200ms color, 200ms background, 200ms border;
+
+         
+         &:active {
+            background: light-dark(var(--white), var(--black));
+            color: light-dark(var(--black), var(--white));
+            border: solid 1px light-dark(var(--black), var(--white));
+         }
+      }
+
+   }
+
+   & > .buttons {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 var(--p);
+      gap: calc(var(--s));
+      height: calc(var(--s) * 3.5);
+
+      .btn {
+         position: relative;
+         width: 100%;
+         height: 100%;
+         display: grid;
+         background-color: light-dark(#fff, #fff);
+         border-radius: calc(var(--s) * 0.4);
+         place-items: center;
+         display: flex;
+         cursor: var(--cursor);
+         justify-content: center;
+         gap: calc(var(--s));
+         font-size: calc(var(--s) * 1.5);
+         font-weight: 900;
+         font-family: f1b;
+         border: solid 2px #000;
+         color: #ff0400;
+         transition: background 200ms, border 200ms;
+
+         &:last-child {
+            color: #ff7700;
+         }
+
+         &:active {
+            background-color: #000;
+            border: solid 2px #fff;
+         }
+      }
+   }
+}
+.basic-grid {
+   position: relative;
+   width: 100%;
+   height: fit-content;
+   display: grid;
+   gap: calc(var(--s) / 2);
+   grid-template-columns: 1fr;
+   place-items: center;
+   margin: 0;
+
+   /* ----- only display hide element ----- */
+   &.auto {
+      display: none;
+      opacity: 0;
+
+      & > * {
+         opacity: 0;
+         transition-duration: 100ms;
+         transition-property: overlay opacity;
+         transition-delay: calc(var(--d) * 50 - 50ms);
+         transition-behavior: allow-discrete;
+      }
+   }
+}
+
+.take-inp {
+   position: relative;
+   width: 100%;
+   height: calc(var(--s) * 5.8);
+   border-radius: calc(var(--s) / 4);
+   outline: solid 1px #0001;
+   background: light-dark(#0004, #222);
+   display: grid;
+   grid-template-columns: 1fr;
+   grid-template-rows: 10fr 14fr;
+   place-items: center;
+
+   &.only-switch {
+      height: calc(var(--s) * 3.5);
+      grid-template-columns: 8fr 2fr;
+      grid-template-rows: 1fr;
+
+      span {
+         width: 90%;
+      }
+   }
+
+   &.one-line {
+      height: calc(var(--s) * 4);
+      padding: 0;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+
+      section {
+         grid-template-columns: 12fr 3fr;
+
+         .take-num {
+            grid-template-columns: 10fr 10fr;
+            p {
+               position: relative;
+               width: 100%;
+               display: flex;
+               justify-content: flex-start;
+               padding-left: calc(var(--s) / 1.5);
+               align-items: center;
+            }
+         }
+      }
+   }
+
+   span {
+      position: relative;
+      width: auto;
+      font-size: 26px;
+      font-weight: 900;
+      font-family: f6b;
+   }
+
+   &.one {
+      grid-template-rows: 1fr;
+      grid-template-columns: 10fr 7fr;
+      height: calc(var(--s) * 3.5);
+
+      & > span {
+         width: 100%;
+         padding: 0 calc(var(--s) / 1.5);
+      }
+
+      section {
+         grid-template-columns: 1fr;
+
+         .inp::before {
+            display: none;
+         }
+
+         .take-num {
+            grid-template-columns: 1fr;
+         }
+      }
+   }
+
+   section {
+      --margin: var(--s) / 2;
+      position: relative;
+      border-radius: inherit;
+      width: calc(100% - var(--margin));
+      height: calc(100% - var(--margin));
+      background: light-dark(#fff, #000);
+      outline: solid 1px light-dark(#aaa, #444);
+      display: grid;
+      grid-template-columns: 7fr 3fr;
+      place-items: center;
+
+      .take-num {
+         position: relative;
+         width: 100%;
+         height: 100%;
+         position: relative;
+         display: grid;
+         place-items: center;
+         grid-auto-flow: column;
+         grid-template-columns: 4fr 5fr;
+
+         p {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+            font-family: f6;
+            background: transparent;
+
+            &::before {
+               content: "";
+               position: absolute;
+               right: 0;
+               width: 1px;
+               height: 80%;
+               background-color: light-dark(#aaa, #444);
+            }
+         }
+
+         .inp {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            grid-template-columns: 2fr 3fr 2fr;
+
+            &::before {
+               content: "";
+               position: absolute;
+               right: 0;
+               width: 1px;
+               height: 80%;
+               background-color: light-dark(#aaa, #444);
+            }
+
+            /* ----------- number input ----------- */
+            input[type="number"] {
+               position: relative;
+               width: 100%;
+               border-radius: calc(var(--s) / 6);
+               font-size: 20px;
+               text-align: center;
+               letter-spacing: 2px;
+               background: #0000;
+               -webkit-appearance: none;
+               -moz-appearance: none;
+               appearance: none;
+               outline: none;
+               border: none;
+               font-family: f2b;
+
+               &:focus {
+                  border: none;
+                  outline: none;
+               }
+            }
+
+            button {
+               position: relative;
+               width: 100%;
+               height: 100%;
+               border: none;
+               outline: none;
+               text-decoration: none;
+               display: grid;
+               place-items: center;
+               color: light-dark(#333, #ccc);
+               background-color: transparent;
+               transition: linear 200ms color, linear 200ms scale;
+               scale: 1;
+               font-size: calc(var(--s) * 2.3);
+               cursor: var(--cursor);
+
+               /* &:hover {
+                  color: light-dark(var(--black), var(--white));
+                  scale: 1.05;
+               } */
+               &.inc:active {
+                  color: #00ff40;
+                  scale: 1.05;
+               }
+               &.dec:active {
+                  color: #ff0000;
+                  scale: 1.05;
+               }
+            }
+         }
+      }
+
+      #startBtn {
+         position: relative;
+         width: calc(var(--s) * 3);
+         height: calc(var(--s) * 2);
+         display: grid;
+         place-items: center;
+         border-radius: 5px;
+         font-size: calc(var(--s) * 1.5);
+         color: light-dark(var(--white), var(--black));
+         background: light-dark(#000, #fff);
+         transition: 200ms color;
+      }
+
+      &.not-updated {
+         cursor: var(--cursor);
+         #startBtn {
+            color: #f00;
+         }
+      }
+      
+   }
+
+   &.only-inc-dec {
+      grid-template-rows: 1fr;
+
+      section {
+         grid-template-columns: 7fr;
+
+         .take-num {
+            grid-template-columns: 4fr 4fr;
+
+            .inp::before {
+               content: "";
+               position: absolute;
+               right: 0;
+               width: 0;
+               height: 0;
+               background-color: none;
+            }
+         }
+      }
+   }
+}
+
+.display-none {
+   display: none;
+}
+
+#selectedUsers {
+   position: relative;
+   width: 100%;
+   height: auto;
+   padding: calc(var(--s) / 2);
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   align-items: center;
+   gap: calc(var(--s) / 1.5);
+
+   .u-name {
+      position: relative;
+      padding: calc(var(--s) / 4) calc(var(--s) / 2);
+      padding-right: calc(var(--s) * 1);
+      background: light-dark(#0003, #fff3);
+      display: grid;
+      place-items: center;
+      border-radius: calc(var(--s) / 2);
+
+      x {
+         color: light-dark(#222, #ddd);
+         font-weight: 100;
+         font-size: calc(var(--s) / 1.3);
+         font-family: f6;
+      }
+
+      .close {
+         --wh: calc(var(--s) * 1.5);
+         position: absolute;
+         width: var(--wh);
+         height: var(--wh);
+         display: grid;
+         place-items: center;
+         border-radius: 100%;
+         font-size: calc(var(--s));
+         right: calc(var(--wh) / -3);
+         top: calc(var(--wh) / -3);
+         color: #ff0000;
+         cursor: var(--cursor);
+         background: light-dark(#000, #fff);
+         transition: 200ms color, 200ms background;
+
+         &:active {
+            color: #fff;
+            background: #ff0000;
+         }
+      }
+   }
+}

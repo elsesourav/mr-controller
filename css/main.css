@@ -1,0 +1,77 @@
+* {
+   margin: 0;
+   padding: 0;
+   font-family: f3;
+   box-sizing: border-box;
+   -ms-overflow-style: none;  /* IE and Edge */
+   scrollbar-width: none;  /* Firefox */
+
+   user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+
+   /* outline: solid 1px #f004; */
+}
+*::-webkit-scrollbar {
+   display: none;
+}
+:root {
+   color-scheme: light dark;
+   --black: #000000;
+   --white: #ffffff;
+   --switch-color-off: var(--white);
+   --switch-color-on: #ff7700;
+
+   --users-h: 300px;
+   --ww: 350px;
+   --s: 15px;
+   --checkbox-r: 25;
+   --users-header-h: 50px;
+}
+
+body {
+   position: relative;
+   margin: 0 auto;
+   width: 100svw;
+   max-width: 500px;
+   min-height: 100svh;
+   display: flex;
+   flex-direction: column;
+   overflow-x: hidden;
+   overflow-y: scroll;
+   background-color: light-dark(#fff, #000);
+
+   .br-tag {
+      position: relative;
+      width: calc(100% - var(--s));
+      height: 5px;
+      border-radius: 2px;
+      margin: calc(var(--s) / 2);
+      background-color: light-dark(var(--black), var(--white));
+   }
+
+   .gap {
+      position: relative;
+      width: 100%;
+      height: calc(var(--s) * 1);
+   }
+
+   .control-section,
+   .status-section,
+   .profile-section {
+      position: relative;
+      width: 100%;
+      padding: 0 calc(var(--s) / 2);
+      padding-top: calc(var(--s) / 2);
+      min-height: 100svh;
+      height: 100%;
+      background-color: light-dark(#e1e1e1, #1e1e1e);
+      display: none;
+      flex-direction: column;
+   }
+   &:has( nav .options .btn #control:checked) .control-section,
+   &:has( nav .options .btn #status:checked) .status-section,
+   &:has( nav .options .btn #profile:checked) .profile-section {
+      display: flex;
+   }
+}

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+         rel="shortcut icon"
+         href="./assets/imgs/logo.png"
+         type="image/x-icon"
+      />
+      <title>MR CONTROLLER</title>
+
+      <!-- -------------------------------------------------------------
+                                    CSS
+      -------------------------------------------------------------- -->
+      <link href="./assets/icons/css/font.css" rel="stylesheet" />
+      <link href="./assets/icons/css/icon.css" rel="stylesheet" />
+      <link rel="stylesheet" href="./css/main.css" />
+      <link rel="stylesheet" href="./css/checkbox.css" />
+      <link rel="stylesheet" href="./css/control.css" />
+      <link rel="stylesheet" href="./css/home.css" />
+      <link rel="stylesheet" href="./css/profile.css" />
+      <link rel="stylesheet" href="./css/floatingWindow.css" />
+
+      <!-- -------------------------------------------------------------
+                                    SCRIPTS
+      -------------------------------------------------------------- -->
+      <script src="./js/config.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.0/firebase-database.js"></script>
+      <script defer src="./js/utils.js"></script>
+      <script defer src="./js/querySelector.js"></script>
+      <script defer src="./js/helper.js"></script>
+      <script defer src="./js/backUtils.js"></script>
+      <script defer src="./js/userBlock.js"></script>
+      <script defer src="./js/control.js"></script>
+      <script defer src="./js/back.js"></script>
+   </head>
+   <body>
+      <!-- -------------------------------------------------------------
+                                    Header
+      -------------------------------------------------------------- -->
+      <header>
+         <div class="logo">
+            <img src="./../assets/imgs/icon.png" alt="extension icon" />
+         </div>
+         <section>
+            <p>Rewards Collector</p>
+            <b>
+               <i class="sbi-copyright"></i>
+               <span class="first">else</span>
+               <span class="second">sourav</span>
+               <span class="year">2024</span>
+            </b>
+         </section>
+      </header>
+      <nav>
+         <div class="options">
+            <div class="btn">
+               <input
+                  type="radio"
+                  name="btn"
+                  id="control"
+                  class="option-btn"
+                  checked
+                  value="CONTROL"
+               />
+               <label for="btn">CONTROL</label>
+            </div>
+            <div class="btn">
+               <input
+                  type="radio"
+                  name="btn"
+                  id="status"
+                  class="option-btn"
+                  value="STATUS"
+               />
+               <label for="btn">STATUS</label>
+            </div>
+            <div class="btn">
+               <input
+                  type="radio"
+                  name="btn"
+                  id="profile"
+                  class="option-btn"
+                  value="PROFILE"
+               />
+               <label for="btn">PROFILE</label>
+            </div>
+         </div>
+      </nav>
+
+      <!-- -------------------------------------------------------------
+                                    Control
+      -------------------------------------------------------------- -->
+      <div class="control-section">
+         <div id="normalUsers" class="users">
+            <div class="select-users">
+               <div class="checkbox">
+                  <input id="selectAll" type="checkbox" />
+                  <label for="selectAll">
+                     <i class="sbi-select-all all"></i>
+                  </label>
+               </div>
+
+               <div class="checkbox">
+                  <input id="completed" type="checkbox" />
+                  <label for="completed">
+                     <i class="sbi-select-all all green"></i>
+                  </label>
+               </div>
+
+               <div class="selected result" id="selectedResultN">0</div>
+               <div class="selected btn" id="executedSelectedAll">EXECUTE</div>
+               <div id="allUsersToggle" class="toggle">
+                  <i class="sbi-chevron-down"></i>
+               </div>
+            </div>
+            <div class="scroll normal"></div>
+         </div>
+
+         <span class="br-tag"></span>
+
+         <section>
+            <div class="basic-grid">
+               <div class="take-inp two-input one-line">
+                  <section>
+                     <div class="take-num inc-dec">
+                        <p>EXECUTE</p>
+                        <div class="inp">
+                           <button class="dec in-de">
+                              <i class="sbi-minus-square"></i>
+                           </button>
+                           <input
+                              value="0"
+                              type="number"
+                              inputmode="numeric"
+                              id="executeLimit"
+                              class="inp-limit"
+                           />
+                           <button class="inc in-de">
+                              <i class="sbi-plus-square"></i>
+                           </button>
+                        </div>
+                     </div>
+                     <div id="startBtn"><i class="sbi-arrow-up1"></i></div>
+                  </section>
+               </div>
+            </div>
+         </section>
+         <br />
+
+         <div id="executeUsers" class="users execute active">
+            <div class="select-users">
+               <div class="checkbox">
+                  <input id="selectAllExe" type="checkbox" />
+                  <label for="selectAllExe">
+                     <i class="sbi-select-all all"></i>
+                  </label>
+               </div>
+
+               <div class="selected result" id="selectedResultE">0</div>
+               <div class="selected btn" id="restartBtn">RESTART</div>
+               <div class="selected btn" id="closeExecuted">CLOSE</div>
+               <div id="executeUserToggle" class="toggle">
+                  <i class="sbi-chevron-down"></i>
+               </div>
+            </div>
+            <div class="scroll execute"></div>
+         </div>
+
+         <span class="br-tag"></span>
+
+         <div id="selectedUsers">
+            <span class="u-name">
+               <x>Nick Nm1</x>
+               <i class="sbi-close close"></i>
+            </span>
+            <span class="u-name">
+               <x>Nick Nm2</x>
+               <i class="sbi-close close"></i>
+            </span>
+            <span class="u-name">
+               <x>Nick Nm3</x>
+               <i class="sbi-close close"></i>
+            </span>
+            <span class="u-name">
+               <x>Nick Nm4</x>
+               <i class="sbi-close close"></i>
+            </span>
+            <span class="u-name">
+               <x>Nick Name5</x>
+               <i class="sbi-close close"></i>
+            </span>
+            <span class="u-name">
+               <x>Nick Name6</x>
+               <i class="sbi-close close"></i>
+            </span>
+         </div>
+
+         <span class="br-tag"></span>
+
+         <div class="controls">
+            <section class="main">
+               <div class="basic-grid">
+                  <div class="take-inp only-switch">
+                     <span>Auto Complete</span>
+                     <input
+                        type="checkbox"
+                        name="auto_complete"
+                        id="autoComplete"
+                        class="inp-checkbox"
+                     />
+                  </div>
+               </div>
+
+               <span class="br-tag"></span>
+
+               <div class="basic-grid auto auto-complete-inputs">
+                  <div class="take-inp only-switch" style="--d: 0ms">
+                     <span>PC Search</span>
+                     <input
+                        type="checkbox"
+                        name="auto_pc_search"
+                        id="autoPcSearch"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 1ms">
+                     <span>Mobile Search</span>
+                     <input
+                        type="checkbox"
+                        name="auto_mobile_search"
+                        id="autoMobileSearch"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 2ms">
+                     <span>Daily Event</span>
+                     <input
+                        type="checkbox"
+                        name="auto_daily_event"
+                        id="autoDailyEvent"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 3ms">
+                     <span>Banner Event</span>
+                     <input
+                        type="checkbox"
+                        name="auto_banner_event"
+                        id="autoBannerEvent"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 4ms">
+                     <span>Recheck at Last</span>
+                     <input
+                        type="checkbox"
+                        name="auto_recheck"
+                        id="autoRecheck"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 5ms">
+                     <span>Auto Start</span>
+                     <input
+                        type="checkbox"
+                        name="auto_start"
+                        id="autoStart"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 6ms">
+                     <span>Auto Close</span>
+                     <input
+                        type="checkbox"
+                        name="auto_close"
+                        id="autoClose"
+                        class="inp-checkbox"
+                        checked
+                     />
+                  </div>
+               </div>
+
+               <div class="basic-grid auto manually-search-inputs">
+                  <div class="take-inp two-input one-line" style="--d: 0ms">
+                     <section>
+                        <div class="take-num">
+                           <p>PC Search</p>
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input
+                                 value="10"
+                                 type="number"
+                                 name="pc_search_limit"
+                                 inputmode="numeric"
+                                 id="pcLimit"
+                                 class="inp-limit"
+                              />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
+                        </div>
+                        <input
+                           type="checkbox"
+                           name="pc_search"
+                           id="pcSearch"
+                           class="inp-checkbox num"
+                        />
+                     </section>
+                  </div>
+                  <div class="take-inp two-input one-line" style="--d: 1ms">
+                     <section>
+                        <div class="take-num">
+                           <p>Mobile Search</p>
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input
+                                 value="10"
+                                 type="number"
+                                 name="mobile_search_limit"
+                                 inputmode="numeric"
+                                 id="mobileLimit"
+                                 class="inp-limit"
+                              />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
+                        </div>
+                        <input
+                           type="checkbox"
+                           name="mobile_search"
+                           id="mobileSearch"
+                           class="inp-checkbox num"
+                        />
+                     </section>
+                  </div>
+                  <div class="take-inp two-input display-none" style="--d: 2ms">
+                     <span>Mobile Search</span>
+                     <section>
+                        <div class="take-num">
+                           <p>Limit</p>
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input
+                                 value="0"
+                                 type="number"
+                                 name="mobile_search_limit"
+                                 inputmode="numeric"
+                                 id="mobileLimit"
+                                 class="inp-limit"
+                              />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
+                        </div>
+                        <input
+                           type="checkbox"
+                           name="mobile_search"
+                           id="mobileSearch"
+                           class="inp-checkbox"
+                        />
+                     </section>
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 3ms">
+                     <span>Daily Event</span>
+                     <input
+                        type="checkbox"
+                        name="daily_event"
+                        id="dailyEvent"
+                        class="inp-checkbox"
+                     />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 4ms">
+                     <span>Banner Event</span>
+                     <input
+                        type="checkbox"
+                        name="banner_event"
+                        id="bannerEvent"
+                        class="inp-checkbox"
+                     />
+                  </div>
+               </div>
+
+               <span class="br-tag"></span>
+
+               <div class="basic-grid fixed">
+                  <div class="take-inp one two-input">
+                     <span>Search Delay</span>
+                     <section>
+                        <div class="take-num">
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input
+                                 value="6"
+                                 type="number"
+                                 name="search_delay_limit"
+                                 inputmode="numeric"
+                                 id="searchDelayLimit"
+                                 class="inp-limit"
+                              />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
+                        </div>
+                     </section>
+                  </div>
+                  <div class="take-inp one two-input">
+                     <span>If !Search Wait</span>
+                     <section>
+                        <div class="take-num">
+                           <div class="inp">
+                              <button class="dec"><i class="sbi-minus-square"></i></button>
+                              <input value="900" type="number" name="not_search_delay_limit" inputmode="numeric" id="notSearchDelay" class="inp-limit multi">
+                              <button class="inc"><i class="sbi-plus-square"></i></button>
+                           </div>
+                        </div>
+                     </section>
+                  </div>
+               </div>
+
+               <span class="br-tag"></span>
+               
+               <div class="btn">
+                  <button id="updateButton">UPDATE</button>
+               </div>
+               
+               <span class="br-tag"></span>
+               
+               <div class="buttons">
+                  <div id="reloadBtn" class="btn">
+                     <p>RELOAD</p>
+                     <i class="sbi-refresh"></i>
+                  </div>
+                  <div id="stopBtn" class="btn">
+                     <p>STOP</p>
+                     <i class="sbi-stop"></i>
+                  </div>
+               </div>
+
+            </section>
+
+         </div>
+         <span class="gap"></span>
+      </div>
+
+      <!-- -------------------------------------------------------------
+                                    Status
+      -------------------------------------------------------------- -->
+      <div class="status-section">
+         <h1>Status Section</h1>
+      </div>
+
+      <!-- -------------------------------------------------------------
+                                    User
+      -------------------------------------------------------------- -->
+      <div class="profile-section">
+         <h1>Profile Section</h1>
+         <div class="user-btn">
+            <div class="logout">LogOut</div>
+         </div>
+      </div>
+
+      <!-- -------------------------------------------------------------
+                              Signin & Signup
+      -------------------------------------------------------------- -->
+      <div id="floatingWindow" class="">
+         <div class="form window">
+            <form class="signin">
+               <div class="title">
+                  <span>SignUp</span>
+                  <span>SignIn</span>
+               </div>
+               <div class="form-input two">
+                  <i class="sbi-user-secret"></i>
+                  <input
+                     type="text"
+                     id="username"
+                     spellcheck="false"
+                     autocomplete="off"
+                     placeholder="Username"
+                     required
+                  />
+               </div>
+               <div class="form-input pass">
+                  <i class="sbi-key1"></i>
+                  <input
+                     type="password"
+                     id="password"
+                     placeholder="Password"
+                     required
+                  />
+                  <div class="eye">
+                     <i class="sbi-eye1"></i>
+                     <i class="sbi-eye-slash"></i>
+                  </div>
+               </div>
+               <div class="form-input pass confirm-pass">
+                  <i class="sbi-key1"></i>
+                  <input
+                     type="password"
+                     id="coPassword"
+                     placeholder="Confirm Password"
+                  />
+                  <div class="eye">
+                     <i class="sbi-eye1"></i>
+                     <i class="sbi-eye-slash"></i>
+                  </div>
+               </div>
+               <div class="switch">
+                  <span>I Have Account <x>SignIn Now.</x></span>
+                  <span>I don't Have Account <x>Create One.</x></span>
+               </div>
+               <div class="form-submit">
+                  <button type="submit" id="submit">SUBMIT</button>
+               </div>
+            </form>
+         </div>
+
+         <div class="alert window">
+            <p id="alertTitle">Alert</p>
+           <div id="alertMessage">Your Alert Message Hare</div>
+           <div class="buttons">
+              <div class="btn" id="hideAlert">Okay</div>
+              <div class="btn" id="optionalBtn">No</div>
+           </div>
+        </div>
+
+         <div class="loading window active">
+            <div class="center">
+               <div class="wave" style="--delay: 0"></div>
+               <div class="wave" style="--delay: 0.1"></div>
+               <div class="wave" style="--delay: 0.2"></div>
+               <div class="wave" style="--delay: 0.3"></div>
+               <div class="wave" style="--delay: 0.4"></div>
+               <div class="wave" style="--delay: 0.5"></div>
+               <div class="wave" style="--delay: 0.6"></div>
+               <div class="wave" style="--delay: 0.7"></div>
+               <div class="wave" style="--delay: 0.8"></div>
+               <div class="wave" style="--delay: 0.9"></div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>

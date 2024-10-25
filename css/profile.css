@@ -1,0 +1,16 @@
+h1 {
+   text-align: center;
+}
+.logout {
+   position: relative;
+   inset: 0;
+   margin: calc(var(--s) * 1.5) calc(var(--s) * 4);
+   display: grid;
+   place-items: center;
+   padding: calc(var(--s)) 0;
+   background-color: red;
+   font-family: f1b;
+   border-radius: 6px;
+   font-size: calc(var(--s) * 2);
+   cursor: var(--cursor);
+}
