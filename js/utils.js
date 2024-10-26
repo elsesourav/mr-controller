@@ -37,6 +37,36 @@ const LOCAL_SAVED = {
    search_delay_limit: 5,
 };
 const userBlocks = {};
+let username;
+
+function GET_REF(accountName = "////") {
+   const { yy, mm, dd } = date();
+   
+   return {
+      admin: db.ref(`admins/${username}`),
+      execute: db.ref(`admins/${username}/execute`),
+      names: db.ref(`admins/${username}/profiles/names`),
+      settings: db.ref(`admins/${username}/profiles/settings`),
+      points: db.ref(`admins/${username}/profiles/points`),
+
+      pending: db.ref(`admins/${username}/pending`),
+      process: db.ref(`admins/${username}/process`),
+      queue: db.ref(`admins/${username}/queue`),
+      requests: db.ref(`admins/${username}/requests`),
+
+      profilePending: db.ref(`admins/${username}/pending/${accountName}`),
+      profileProcess: db.ref(`admins/${username}/process/${accountName}`),
+      profileQueue: db.ref(`admins/${username}/queue/${accountName}`),
+      profileRequests: db.ref(`admins/${username}/requests/${accountName}`),
+
+      profileSettings: db.ref(`admins/${username}/profiles/settings/${accountName}`),
+      profileName: db.ref(`admins/${username}/profiles/names/${accountName}`),
+      profilePoints: db.ref(`admins/${username}/profiles/points/${accountName}`),
+      totalPoints: db.ref(`admins/${username}/profiles/points/${accountName}/total`),
+      todayPoints: db.ref(`admins/${username}/profiles/points/${accountName}/${yy}/${mm}/${dd}`),
+   }
+}
+
 
 /* ----  local storage set and get ---- */
 function setDataFromLocalStorage(key, object) {

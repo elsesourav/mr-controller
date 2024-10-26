@@ -35,33 +35,34 @@ const moveUser = asyncHandler(async (username) => {
 async function setup() {
    const DATA = getDataFromLocalStorage(STORAGE_KEY);
    const { yy, mm, dd } = date();
+   if (DATA.username) username = DATA.username;
 
    I("#normalUsers").toggle("active", DATA.isOpenAllUsers);
    I("#executeUsers").toggle("active", DATA.isOpenExecuteUsers);
    I("#executeLimit")[0].value = DATA.numOfExecute;
    LOCAL_SAVED.numOfExecute = DATA.numOfExecute;
-   const username = DATA.username;
    const USERS = [];
 
-   const adminData = db.ref(`admins/${username}/users/`);
-   await adminData.get().then((snapshot) => {
+   const profileNamesRef = GET_REF().names;
+   const executeRef = GET_REF().execute;
+
+   await profileNamesRef.get().then((snapshot) => {
       if (snapshot.exists()) {
-         const users = snapshot.val();
-         for (const key in users) {
-            userBlocks[key] = new UserBlock(normalUsers, key, username);
-            USERS.push(key);
-            userBlocks[key].connectDB(db);
+         const names = snapshot.val();
+
+         for (const name in names) {
+            userBlocks[name] = new UserBlock(normalUsers, name, username);
+            USERS.push(name);
+            userBlocks[name].connectDB();
          }
       }
    });
 
-   const executeRef = db.ref(`admins/${username}/execute/`);
-
    executeRef.get().then((snapshot) =>
       asyncHandler(async () => {
          const value = snapshot.val();
-         
-         if (!(value && value[`${yy}${mm}${dd}`])) {
+
+         if (value === null || !value[`${yy}${mm}${dd}`]) {
             const { limit } = value;
             executeRef
                .set({

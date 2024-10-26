@@ -1,21 +1,8 @@
 class UserBlock {
-   constructor(parent, username, adminName) {
+   constructor(parent, name, adminName) {
       this.parent = parent;
-      this.username = username;
+      this.name = name;
       this.adminName = adminName;
-
-      this.URL = {
-         queue: `admins/${this.adminName}/execute/queue/`,
-         pending: `admins/${this.adminName}/execute/pending/`,
-         process: `admins/${this.adminName}/execute/process/`,
-         request: `admins/${this.adminName}/execute/requests/`,
-         point: `admins/${this.adminName}/usersPoints/`,
-         queueUser: `admins/${this.adminName}/execute/queue/${this.username}/`,
-         pendingUser: `admins/${this.adminName}/execute/pending/${this.username}/`,
-         processUser: `admins/${this.adminName}/execute/process/${this.username}/`,
-         requestUser: `admins/${this.adminName}/execute/requests/${this.username}/`,
-         pointUser: `admins/${this.adminName}/usersPoints/${this.username}/`,
-      };
       this.points = 0;
       this.tPoints = 0;
       this.userE = null;
@@ -29,14 +16,14 @@ class UserBlock {
    }
 
    #setup() {
-      const { parent, username, points, tPoints, exeCloBtnText } = this;
+      const { parent, name, points, tPoints, exeCloBtnText } = this;
       const no = parent.children.length + 1;
 
       this.userE = CE(
          { class: "user", onclick: `showSelected()` },
          CE({ tag: "input", class: "user-check", type: "checkbox" }),
          (this.noE = CE({ class: "no" }, no)),
-         CE({ class: "name" }, username),
+         CE({ class: "name" }, name),
          CE(
             { class: "sbi-redeem point" },
             (this.pointE = CE({ tag: "span" }, points))
@@ -51,30 +38,25 @@ class UserBlock {
    }
 
    clickAction() {
-      const pendingRef = db.ref(this.URL.pending);
-      const pendingUserRef = db.ref(this.URL.pendingUser);
-      const queueRef = db.ref(this.URL.queue);
-      const queueUserRef = db.ref(this.URL.queueUser);
-      const requestRef = db.ref(this.URL.request);
-      const processUserRef = db.ref(this.URL.processUser);
-
       asyncHandler(async () => {
+         const { name } = this;
+
          if (this.exeCloBtn.textContent === "EXECUTE") {
-            const oldLocation = await queueUserRef.get();
+            const oldLocation = await GET_REF(name).profileQueue.get();
 
             if (oldLocation.exists()) {
-               await queueUserRef.remove();
+               await GET_REF(name).profileQueue.remove();
             }
-            await pendingRef.update({ [this.username]: Date.now() });
+            await GET_REF().pending.update({ [name]: Date.now() });
             hideFloatingWindow();
          } else {
-            const snapshot = await processUserRef.get();
+            const snap = await GET_REF(name).profileProcess.get();
 
-            if (snapshot.exists()) {
-               await requestRef.update({ [this.username]: Date.now() });
+            if (snap.exists()) {
+               await GET_REF().requests.update({ [name]: Date.now() });
             } else {
-               await pendingUserRef.remove();
-               await queueRef.update({ [this.username]: Date.now() });
+               await GET_REF(name).profilePending.remove();
+               await GET_REF().queue.update({ [name]: Date.now() });
             }
             hideFloatingWindow();
          }
@@ -87,25 +69,29 @@ class UserBlock {
       });
    }
 
-   connectDB(db) {
+   connectDB() {
+      console.log("work");
+
       asyncHandler(async () => {
-         const { yy, mm, dd } = date();
+         const { name } = this;
 
-         const atStartRef = db.ref(
-            `${this.URL.pointUser}/atStart/${yy}${mm}${dd}`
-         );
-         const oldStartPoints = (await atStartRef.get("value")).val();
-
-         const totalPointsRef = db.ref(`${this.URL.pointUser}/totalPoints`);
-         const oldTotalPoints = (await totalPointsRef.get("value")).val();
-
-         const startPoints = oldStartPoints || oldTotalPoints || 0;
-
-         await totalPointsRef.on("value", (snapshot) => {
-            if (snapshot.exists()) {
-               const value = snapshot.val();
+         await GET_REF(name).totalPoints.on("value", (snap) => {
+            if (snap.exists()) {
+               const value = snap.val();
+               console.log(value);
                this.pointE.innerText = this.points = value || 0;
-               this.tPointE.innerText = this.tPoints = value - startPoints;
+            }
+         });
+
+         await GET_REF(name).todayPoints.on("value", (snap) => {
+            if (snap.exists()) {
+               const { isActivitiesComplete, mobile, pc } = snap.val();
+               let str = "";
+               if (mobile?.progress) str += mobile.progress;
+               if (pc?.progress) str += `+${pc.progress}`;
+               if (isActivitiesComplete) str += `+E`;
+               
+               this.tPointE.innerText = this.tPoints = str;
             }
          });
       });

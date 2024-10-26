@@ -376,8 +376,8 @@ I("#updateButton").click(async () => {
 
    showLoading();
    for (const user of users) {
-      const userRef = db.ref(`admins/${username}/users/${user}/`);
-      await userRef.update(settings);
+      const profileSettingsRef = GET_REF(user).profileSettings;
+      await profileSettingsRef.update(settings);
    }
    hideFloatingWindow();
 });
@@ -394,8 +394,8 @@ I("#reloadBtn").click(async () => {
 
    showLoading();
    for (const user of users) {
-      const userRef = db.ref(`admins/${username}/users/${user}/`);
-      await userRef.update(settings);
+      const profileSettingsRef = GET_REF(user).profileSettings;
+      await profileSettingsRef.update(settings);
    }
    hideFloatingWindow();
 });
@@ -412,8 +412,8 @@ I("#stopBtn").click(async () => {
 
    showLoading();
    for (const user of users) {
-      const userRef = db.ref(`admins/${username}/users/${user}/`);
-      await userRef.update(settings);
+      const profileSettingsRef = GET_REF(user).profileSettings;
+      await profileSettingsRef.update(settings);
    }
    hideFloatingWindow();
 });
