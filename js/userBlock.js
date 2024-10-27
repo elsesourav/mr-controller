@@ -70,15 +70,12 @@ class UserBlock {
    }
 
    connectDB() {
-      console.log("work");
-
       asyncHandler(async () => {
          const { name } = this;
 
          await GET_REF(name).totalPoints.on("value", (snap) => {
             if (snap.exists()) {
                const value = snap.val();
-               console.log(value);
                this.pointE.innerText = this.points = value || 0;
             }
          });

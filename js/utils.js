@@ -49,15 +49,15 @@ function GET_REF(accountName = "////") {
       settings: db.ref(`admins/${username}/profiles/settings`),
       points: db.ref(`admins/${username}/profiles/points`),
 
-      pending: db.ref(`admins/${username}/pending`),
-      process: db.ref(`admins/${username}/process`),
-      queue: db.ref(`admins/${username}/queue`),
-      requests: db.ref(`admins/${username}/requests`),
+      pending: db.ref(`admins/${username}/execute/pending`),
+      process: db.ref(`admins/${username}/execute/process`),
+      queue: db.ref(`admins/${username}/execute/queue`),
+      requests: db.ref(`admins/${username}/execute/requests`),
 
-      profilePending: db.ref(`admins/${username}/pending/${accountName}`),
-      profileProcess: db.ref(`admins/${username}/process/${accountName}`),
-      profileQueue: db.ref(`admins/${username}/queue/${accountName}`),
-      profileRequests: db.ref(`admins/${username}/requests/${accountName}`),
+      profilePending: db.ref(`admins/${username}/execute/pending/${accountName}`),
+      profileProcess: db.ref(`admins/${username}/execute/process/${accountName}`),
+      profileQueue: db.ref(`admins/${username}/execute/queue/${accountName}`),
+      profileRequests: db.ref(`admins/${username}/execute/requests/${accountName}`),
 
       profileSettings: db.ref(`admins/${username}/profiles/settings/${accountName}`),
       profileName: db.ref(`admins/${username}/profiles/names/${accountName}`),
