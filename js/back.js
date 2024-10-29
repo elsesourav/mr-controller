@@ -89,7 +89,7 @@ function changeUsersParentAll(value) {
 
 function changeUsersParent(usernames = {}, isQueue = true, isProcess) {
    const parent = isQueue ? normalUsers : executeUsers;
-   parent.innerHTML = "";
+   // parent.innerHTML = "";
    for (const key in usernames) {
       userBlocks[key].updateParent(parent);
       userBlocks[key].updateRunningStatus(false);
