@@ -7,13 +7,11 @@ function getUser() {
 }
 
 function signOutUser() {
-   firebase.auth().signOut();
+   auth.signOut();
 }
 
 window.addEventListener("load", async () => {
-   // if (!getUser()) {
-   //    setupUserForm();
-   // }
+   // Initialization logic if needed
 });
 
 auth.onAuthStateChanged(async (user) => {
@@ -49,7 +47,6 @@ async function setup() {
    await profileNamesRef.get().then((snapshot) => {
       if (snapshot.exists()) {
          const names = snapshot.val();
-
          for (const name in names) {
             userBlocks[name] = new UserBlock(normalUsers, name, username);
             USERS.push(name);
@@ -61,29 +58,23 @@ async function setup() {
    executeRef.get().then((snapshot) =>
       asyncHandler(async () => {
          const value = snapshot.val();
-
-         if (value === null || !value[`${yy}${mm}${dd}`]) {
-            const { limit } = value;
-            executeRef
-               .set({
-                  [`${yy}${mm}${dd}`]: true,
-                  limit: limit || 0,
-                  pending: {},
-                  process: {},
-                  queue: arrayToObject(USERS),
-                  requests: {},
-               })
-               .then((e) => {
-                  console.log(e);
-               });
+         if (!value || !value[`${yy}${mm}${dd}`]) {
+            const { limit } = value || {};
+            executeRef.set({
+               [`${yy}${mm}${dd}`]: true,
+               limit: limit || 0,
+               pending: {},
+               process: {},
+               queue: arrayToObject(USERS),
+               requests: {},
+            }).then(console.log);
          }
       })
    );
 
    executeRef.on("value", (snapshot) => {
       if (snapshot.exists()) {
-         const value = snapshot.val();
-         changeUsersParentAll(value);
+         changeUsersParentAll(snapshot.val());
       }
    });
 }
@@ -98,18 +89,16 @@ function changeUsersParentAll(value) {
 
 function changeUsersParent(usernames = {}, isQueue = true, isProcess) {
    const parent = isQueue ? normalUsers : executeUsers;
-
+   parent.innerHTML = "";
    for (const key in usernames) {
       userBlocks[key].updateParent(parent);
       userBlocks[key].updateRunningStatus(false);
    }
-
    if (!isQueue && isProcess) {
       for (const key in usernames) {
          userBlocks[key].updateRunningStatus(true);
       }
    }
-
    const s1 = [...scrollNormal.children].filter((e) => e.firstChild.checked);
    const s2 = [...scrollExecute.children].filter((e) => e.firstChild.checked);
    selectedResultN.innerText = s1.length;

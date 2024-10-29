@@ -7,30 +7,11 @@ I(".users .toggle").click((_, i) => {
 });
 
 const updateStorage = (fun = () => {}) => {
-   // checkboxInputs.each((ele) => {
-   //    const name = ele.attr("name");
-   //    if (name === "auto_complete")
-   //       defaultSwitches.auto_complete_manual = ele.checked;
-   //    defaultSwitches[name] = ele.checked;
-   // });
-   // limitInputs.each((ele, i) => {
-   //    defaultLimits[ele.attr("name")] = parseInt(ele.value);
-   // });
-   // const manuallyWork = {
-   //    pc_search_limit: I("#pcSearch").checked && parseInt(I("#pcLimit").value),
-   //    mobile_search_limit:
-   //       I("#mobileSearch").checked && parseInt(I("#mobileLimit").value),
-   //    daily_event: I("#dailyEvent").checked,
-   //    banner_event: I("#bannerEvent").checked,
-   // };
-   // setDataToLocalStorage(tempStorageKey, manuallyWork);
-   // setDataToLocalStorage(STORAGE_KEY, { defaultLimits, defaultSwitches }, fun);
+   // Update storage logic
 };
 
 const getInputDelay = () => {
-   return I("#takeInputDelay").checked
-      ? parseInt(I("#waitForInput").value) * 1000
-      : 200;
+   return I("#takeInputDelay").checked ? parseInt(I("#waitForInput").value) * 1000 : 200;
 };
 
 const saveStorage = () => {
@@ -45,7 +26,6 @@ const saveStorage = () => {
    setDataFromLocalStorage(STORAGE_KEY, savedData);
 };
 
-// default Setup
 (() => {
    if (!getDataFromLocalStorage(STORAGE_KEY))
       setDataFromLocalStorage(STORAGE_KEY, LOCAL_SAVED);
@@ -60,7 +40,6 @@ const saveStorage = () => {
    });
 })();
 
-// increase decrease button (only switch limit input)
 const autoInputCheckbox = I(".basic-grid .inp-checkbox");
 const numInpLimit = I(".two-input .inp-limit");
 const twoInputCheckboxes = I(".two-input .inp-checkbox");
@@ -109,17 +88,13 @@ async function incDec(elements, i, inDe = 1) {
       elements[i].value = val + inDe;
       await savedLimitValue(elements[i].name, val + inDe);
 
-      if (
-         elements[i].classList.contains("num") &&
-         checkboxesWithNum[i].checked
-      ) {
+      if (elements[i].classList.contains("num") && checkboxesWithNum[i].checked) {
          checkboxesWithNum[i].checked = false;
          savedAndSendBackgroundManualAction();
       }
    }
 }
 
-// increase decrease button
 I(".two-input .inc").click((_, i) => {
    incDec(numInpLimit, i, 1);
 });
@@ -132,10 +107,7 @@ limitInputs.on("input", async (_, i, ele) => {
    savedLimitValue(ele.name, n);
 });
 
-// work any particular task in one time other work auto turn off (manually)
-const manuallySearchInputCheckboxes = I(
-   ".manually-search-inputs .inp-checkbox"
-);
+const manuallySearchInputCheckboxes = I(".manually-search-inputs .inp-checkbox");
 manuallySearchInputCheckboxes.click((_, i) => {
    if (i === 2 || i === 3) {
       manuallySearchInputCheckboxes[0].checked = false;
@@ -152,8 +124,6 @@ autoComplete.click(() => {
 });
 autoInputCheckbox.on("change", saveStorage);
 
-/* -------- user event -------- */
-
 I(".pass").each((e) => {
    I(".eye", e).click(() => {
       const input = I("input", e)[0];
@@ -164,7 +134,7 @@ I(".pass").each((e) => {
 const showAlert = (
    {
       title = "ALERT",
-      message = "Your Alert Message Hare.",
+      message = "Your Alert Message Here.",
       btnText = "Okay",
       optionalBtnText,
    } = {},
@@ -302,7 +272,7 @@ scrollExecute.click((_, __, ele) => {
    let users = [...ele.children];
    const allUsersChecked = users.filter((e) => e.firstChild.checked);
 
-   if (users.length !== 0 && users.length === allUsersChecked.length)
+   if (users.length && users.length === allUsersChecked.length)
       selectAllExe.checked = true;
    else selectAllExe.checked = false;
 
@@ -418,7 +388,6 @@ I("#stopBtn").click(async () => {
    hideFloatingWindow();
 });
 
-// call by html onclick
 function showSelected() {
    selectedUsers.innerText = "";
    const users = [...scrollNormal.children, ...scrollExecute.children];

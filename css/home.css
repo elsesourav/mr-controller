@@ -159,15 +159,15 @@ nav {
    background-color: light-dark(#e8dafd, #2d2739);
    grid-template-rows: var(--users-header-h) auto;
    border-radius: 8px;
+   transition: linear height 300ms;
 
    &.execute {
       background-color: light-dark(#ffdcc6, #40322a);
    }
 
    &.active {
-      min-height: var(--users-header-h);
-      height: auto;
-      max-height: var(--users-h);
+      height: var(--users-h);
+      grid-template-rows: var(--users-header-h) auto;
    }
 
    .select-users {
@@ -246,6 +246,7 @@ nav {
       flex-direction: column;
       padding: 5px 0;
       gap: 5px;
+      overflow: hidden;
       overflow-y: scroll;
 
       .user {

@@ -106,7 +106,7 @@ class UserBlock {
       this.exeCloBtn.innerText = this.exeCloBtnText = btnText;
    }
 
-   updateParent(parent = this.parent) {
+updateParent(parent = this.parent) {
       this.parent = parent;
 
       if (this.parent === I("#normalUsers .scroll")[0]) {
@@ -114,9 +114,9 @@ class UserBlock {
       } else {
          this.exeCloBtn.innerText = this.exeCloBtnText = "CLOSE";
       }
-
-      this.noE.innerText = this.parent.children.length + 1;
+      
       this.parent.append(this.userE);
+      this.noE.innerText = this.parent.childNodes.length;
    }
 
    setCallBack(callBack) {
