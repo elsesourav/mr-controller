@@ -65,10 +65,4 @@ async function setup() {
    );
 }
 
-executedSelectedAll.click(() => {
-   manageProfiles.executeAllProfiles();
-});
 
-closeExecuted.click(() => {
-   manageProfiles.closeAllProfiles();
-});

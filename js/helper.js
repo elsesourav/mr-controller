@@ -9,6 +9,10 @@ function getSelectedProfiles(
    return profiles.filter((e) => !e.classList.contains("hide") && e.firstChild.checked);
 }
 
+function getNonHideProfilesNames(profiles = [...scrollNormal.children, ...scrollExecute.children]) {
+   return profiles.filter((e) => !e.classList.contains("hide")).map((e) => e.getAttribute("name"));
+}
+
 function isAllUnCompleteSelected() {
    const profiles = [...scrollNormal.children];
    const unCompleteProfiles = profiles.filter((e) => !e.classList.contains("hide") && !e.classList.contains("complete"));

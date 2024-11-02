@@ -39,6 +39,7 @@ function GET_REF(accountName = "////") {
    return {
       admin: db.ref(`admins/${username}`),
       execute: db.ref(`admins/${username}/execute`),
+      killApp: db.ref(`admins/${username}/execute/killApp`),
       names: db.ref(`admins/${username}/profiles/names`),
       settings: db.ref(`admins/${username}/profiles/settings`),
       points: db.ref(`admins/${username}/profiles/points`),

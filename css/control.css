@@ -331,13 +331,6 @@ section {
          background: light-dark(#000, #fff);
          transition: 200ms color;
       }
-
-      &.not-updated {
-         cursor: var(--cursor);
-         #executeAllButton {
-            color: #f00;
-         }
-      }
       
    }
 

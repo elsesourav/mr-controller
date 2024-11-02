@@ -1,7 +1,7 @@
 const signupUser = async (username, password) => {
    showLoading();
    try {
-      const userCredential = await auth.createUserWithEmailAndPassword(`${username}@gmail.com`, password);
+      await auth.createUserWithEmailAndPassword(`${username}@gmail.com`, password);
       const adminRef = GET_REF().admin;
       const executeRef = GET_REF().execute;
 
@@ -45,7 +45,7 @@ const signinUser = async (username, password) => {
    }
 };
 
-async function executeAll(_, __, e) {
+async function updateExecuteLimit(_, __, e) {
    const executeLimitValue = I("#executeLimit").value;
 
    if (executeLimitValue !== LOCAL_SAVED.numOfExecute) {
@@ -56,24 +56,24 @@ async function executeAll(_, __, e) {
       const executeRef = GET_REF().execute;
       await executeRef.update({ limit: savedData.numOfExecute });
       setDataFromLocalStorage(STORAGE_KEY, savedData);
-      e.parentNode.classList.remove("not-updated");
       hideFloatingWindow();
    }
 }
 
 async function reloadSelectedProfiles() {
    const DATA = getDataFromLocalStorage(STORAGE_KEY);
-   
+
    const settings = { reload_ID: Date.now() };
    DATA.reload_ID = settings.reload_ID;
    setDataFromLocalStorage(STORAGE_KEY, DATA);
-   
+
    const profiles = getSelectedProfileNames();
-   
+
    showLoading();
-   for (const profile of profiles) {
-      const profileSettingsRef = GET_REF(profile).profileSettings;
-      await profileSettingsRef.update(settings);
+   for (let i = 0; i < profiles.length; i++) {
+      const name = profiles[i];
+      if (i === profiles.length - 2) await updateProfileSettings(name, settings);
+      else updateProfileSettings(name, settings);
    }
    hideFloatingWindow();
 }
@@ -84,13 +84,14 @@ async function stopSelectedProfiles() {
    const settings = { stop_ID: Date.now() };
    DATA.stop_ID = settings.stop_ID;
    setDataFromLocalStorage(STORAGE_KEY, DATA);
-
    const profiles = getSelectedProfileNames();
 
    showLoading();
-   for (const profile of profiles) {
-      const profileSettingsRef = GET_REF(profile).profileSettings;
-      await profileSettingsRef.update(settings);
+
+   for (let i = 0; i < profiles.length; i++) {
+      const name = profiles[i];
+      if (i === profiles.length - 2) await updateProfileSettings(name, settings);
+      else updateProfileSettings(name, settings);
    }
    hideFloatingWindow();
 }
@@ -132,4 +133,20 @@ async function updateAllProfilesSettings() {
 async function updateProfileSettings(name, settings) {
    const profileSettingsRef = GET_REF(name).profileSettings;
    await profileSettingsRef.update(settings);
+}
+
+async function killApp() {
+   const profilesName = getNonHideProfilesNames([...scrollExecute.children]);
+
+   if (profilesName.length > 0) {
+      showAlert({
+         message: "Are you sure you want to Fully Close the Browser?",
+         btnText: "No",
+         optionalBtnText: "Yes",
+      }, hideFloatingWindow, async () => {
+         manageProfiles.closeAllProfiles(profilesName);
+         const killAppRef = GET_REF().killApp;
+         await killAppRef.set(Date.now());
+      });
+   }
 }

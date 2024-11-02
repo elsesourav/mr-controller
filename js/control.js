@@ -226,8 +226,19 @@ selectAllExe.click((_, __, ele) => {
    selectProfiles(profiles, isChecked);
 });
 
-I("#executeAllButton").click(executeAll);
+I("#executeAllButton").click(updateExecuteLimit);
 I("#reloadBtn").click(reloadSelectedProfiles);
 I("#stopBtn").click(stopSelectedProfiles);
 I("#updateButton").click(updateAllProfilesSettings);
 I(".logout").click(logoutUser);
+I("#killApp").click(killApp);
+
+executedSelectedAll.click(() => {
+   manageProfiles.executeAllProfiles();
+   selectProfiles([...scrollNormal.children], false);
+});
+
+closeExecuted.click(() => {
+   manageProfiles.closeAllProfiles();
+   selectProfiles([...scrollExecute.children], false);
+});

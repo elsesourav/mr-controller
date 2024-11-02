@@ -143,7 +143,7 @@ class ManageProfiles {
    setSelectedProfilesSize(parent, resultElement, checkbox) {
       const profiles = getSelectedProfiles([...parent.children]);
       resultElement.innerText = profiles.length;
-      const children = [...parent.children].filter(e => !e.classList.contains("hide")); 
+      const children = [...parent.children].filter(e => !e.classList.contains("hide"));
       const size = children.length;
       checkbox.checked = profiles.length === size && size !== 0;
 
@@ -169,8 +169,8 @@ class ManageProfiles {
       this.profilesDB.executeAllProfiles();
    }
 
-   closeAllProfiles() {
-      this.profilesDB.closeAllProfiles();
+   closeAllProfiles(profiles) {
+      this.profilesDB.closeAllProfiles(profiles);
    }
 }
 
@@ -288,10 +288,11 @@ class Profiles {
       });
    }
 
-   closeAllProfiles() {
+   closeAllProfiles(profiles) {
       asyncHandler(async () => {
          showLoading();
-         const profiles = getSelectedProfileNames([...scrollExecute.children]);
+         profiles = profiles || getSelectedProfileNames([...scrollExecute.children]);
+
          for (let i = 0; i < profiles.length; i++) {
             const name = profiles[i];
             if (i === profiles.length - 2)
