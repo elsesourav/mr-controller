@@ -150,7 +150,7 @@ nav {
    }
 }
 
-.users {
+.profiles {
    position: relative;
    width: 100%;
    display: grid;
@@ -182,22 +182,56 @@ nav {
       & > div {
          position: relative;
          display: flex;
+         justify-content: center;
+         align-items: center;
          gap: 5px;
       }
 
-      .all {
-         font-size: calc(var(--s) * 1.6);
-         color: light-dark(#000, #fff);
-         opacity: 0.4;
-         transition: 200ms opacity;
+      .checkbox {
+         position: relative;
+         display: flex;
+         width: min-content;
+         height: 100%;
 
-         &.green {
-            color: #00ff00;
+         .cover {
+            position: relative;
+            width: calc(var(--users-header-h) * 0.6);
+            height: calc(var(--users-header-h) * 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            .all {
+               position: relative;
+               font-size: calc(var(--s) * 2);
+               color: light-dark(#000, #fff);
+               opacity: 0.4;
+               transition: 200ms opacity;
+               cursor: var(--cursor);
+      
+               &.green {
+                  color: #ff0000;
+               }
+            }
+            input {
+               
+               &:checked ~ label .all {
+                  opacity: 1;
+               } 
+            }
+
+         }
+         .reference {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            font-size: calc(var(--s) * 1.5);
+            color: #ff0000;
+            place-items: center;
          }
       }
-      input:checked ~ label .all {
-         opacity: 1;
-      } 
+
 
       .selected.result {
          width: 30px;
@@ -223,6 +257,7 @@ nav {
          height: 120%;
          padding: 6px 14px;
          display: grid;
+         grid-auto-flow: column;
          place-items: center;
          border-radius: 6px;
          background-color: light-dark(#fff, #000);
@@ -230,6 +265,10 @@ nav {
          text-align: center;
          transition: background-color 300ms, color 300ms;
          cursor: var(--cursor);
+
+         i {
+            font-size: calc(var(--s) * 1.4);
+         }
 
          &:active {
             background-color: light-dark(#000, #fff);
@@ -249,7 +288,7 @@ nav {
       overflow: hidden;
       overflow-y: scroll;
 
-      .user {
+      .profile {
          --m: 5px;
          position: relative;
          width: calc(100% - var(--m) * 2);
@@ -259,21 +298,21 @@ nav {
          background-color: light-dark(#0002, #fff2);
          padding: calc(var(--m) * 2);
          border-radius: 5px;
-         grid-template-columns: 7fr 4fr 5fr 2fr 7fr;
+         grid-template-columns: 7fr 4fr 5fr 2fr 4fr;
          gap: 2px;
-
+         
          &:nth-child(even) {
             background-color: light-dark(#0003, #fff3);
          }
-
-         &.selected {
-            background-color: light-dark(#0005, #fff5);
+         
+         &.hide {
+            display: none;
          }
-
+         
          &.running {
-            background-color: #00c3ff;
+            background-color: #ff760c;
          }
-
+         
          input[type="checkbox"] {
             position: absolute;
             z-index: 2;
@@ -283,6 +322,7 @@ nav {
             -moz-appearance: none;
             -webkit-appearance: none;
             -ms-progress-appearance: none;
+            cursor: grab;
          }
 
          &:has(input[type="checkbox"]:checked)::after {
@@ -292,8 +332,10 @@ nav {
             height: 100%;
             left: 0;
             top: 0;
-            background-color: light-dark(#0004, #fff4);
-            outline: solid 1px light-dark(#000, #fff);
+            box-sizing: border-box;
+            background-color: light-dark(#0002, #fff2);
+            border: solid 1px light-dark(#fff, #000);
+            outline: solid 2px light-dark(#000, #fff);
             border-radius: inherit;
          }
 
@@ -328,10 +370,9 @@ nav {
             font-size: calc(var(--s) * 1.4);
             color: #ff0000;
             transition: 300ms color;
-
-            &.complete {
-               color: #0f0;
-            }
+         }
+         &.complete i {
+            color: #0f0;
          }
          .name {
             position: relative;

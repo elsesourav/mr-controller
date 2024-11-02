@@ -32,7 +32,7 @@ const LOCAL_SAVED = {
 };
 
 const userBlocks = {};
-let username;
+let username, manageProfiles;
 
 function GET_REF(accountName = "////") {
    const { yy, mm, dd } = date();
@@ -70,7 +70,7 @@ function reloadLocation() {
    window.location.reload();
 }
 
-function setDataToLocalStorage(key, object, fun = () => {}) {
+function setDataToLocalStorage(key, object, fun = () => { }) {
    return new Promise((resolve) => {
       localStorage.setItem(key, JSON.stringify(object));
       if (typeof fun === "function") fun();
@@ -78,7 +78,7 @@ function setDataToLocalStorage(key, object, fun = () => {}) {
    });
 }
 
-function getDataToLocalStorage(key, fun = () => {}) {
+function getDataToLocalStorage(key, fun = () => { }) {
    return new Promise((resolve) => {
       const data = JSON.parse(localStorage.getItem(key));
       if (typeof fun === "function") fun(data);
@@ -202,10 +202,18 @@ function date() {
    return { yy, mm, dd };
 }
 
-function arrayToObject(arr) {
+function updateObjectDate(object) {
    const obj = {};
-   arr.forEach((e) => {
-      obj[e] = Date.now();
-   });
+   for (const key in object) {
+      obj[key] = Date.now();
+   }
    return obj;
+}
+
+function selectProfiles(profiles, isChecked, showProfiles = manageProfiles.showSelected) {
+   profiles.forEach((profile) => {
+      profile.firstChild.checked = isChecked;
+      const name = profile.getAttribute("name");
+      showProfiles[name].classList.toggle("hide", !isChecked);
+   });
 }

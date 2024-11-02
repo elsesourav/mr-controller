@@ -1,14 +1,13 @@
-const checkboxInputs = I("input[type=checkbox].inp-checkbox");
 const manuallySearchInputsCheckbox = I(".manually-search-inputs .inp-checkbox");
 const limitInputs = I("input[type=number].inp-limit");
+const scrollNormal = I("#scrollNormal")[0];
+const scrollExecute = I("#scrollExecute")[0];
+const showSelectedParent = I("#showSelectedParent")[0];
 
-I(".users .toggle").click((_, i) => {
-   I(".users")[i].toggle("active");
+
+I(".profiles .toggle").click((_, i) => {
+   I(".profiles")[i].toggle("active");
 });
-
-const updateStorage = (fun = () => {}) => {
-   // Update storage logic
-};
 
 const getInputDelay = () => {
    return I("#takeInputDelay").checked ? parseInt(I("#waitForInput").value) * 1000 : 200;
@@ -44,56 +43,6 @@ const autoInputCheckbox = I(".basic-grid .inp-checkbox");
 const numInpLimit = I(".two-input .inp-limit");
 const twoInputCheckboxes = I(".two-input .inp-checkbox");
 
-function savedAndSendBackgroundManualAction(ele = false) {
-   return new Promise(async (resolve) => {
-      getDataToLocalStorage(STORAGE_KEY, async (DATA = LOCAL_SAVED) => {
-         const eleIs = ele?.checked;
-         manuallySearchInputsCheckbox.each((e) => {
-            DATA[e.name] = e.checked = false;
-         });
-         if (ele) DATA[ele.name] = ele.checked = eleIs;
-
-         await setDataToLocalStorage(STORAGE_KEY, DATA);
-         resolve();
-      });
-   });
-}
-
-function savedLimitValue(name, n) {
-   return new Promise((resolve) => {
-      getDataToLocalStorage(STORAGE_KEY, async (DATA = LOCAL_SAVED) => {
-         if (DATA[name] !== undefined) DATA[name] = N(n);
-         await setDataToLocalStorage(STORAGE_KEY, DATA);
-         resolve();
-      });
-   });
-}
-
-function savedAutoCompleteCheckboxes(ele) {
-   return new Promise((resolve) => {
-      getDataToLocalStorage(STORAGE_KEY, async (DATA = LOCAL_SAVED) => {
-         if (DATA[ele.name] !== undefined) {
-            DATA[ele.name] = ele.checked;
-         }
-         await setDataToLocalStorage(STORAGE_KEY, DATA);
-         resolve();
-      });
-   });
-}
-
-async function incDec(elements, i, inDe = 1) {
-   const val = N(elements[i].value);
-
-   if (val + inDe >= 0) {
-      elements[i].value = val + inDe;
-      await savedLimitValue(elements[i].name, val + inDe);
-
-      if (elements[i].classList.contains("num") && checkboxesWithNum[i].checked) {
-         checkboxesWithNum[i].checked = false;
-         savedAndSendBackgroundManualAction();
-      }
-   }
-}
 
 I(".two-input .inc").click((_, i) => {
    incDec(numInpLimit, i, 1);
@@ -230,15 +179,15 @@ I("#submit").click((event) => {
    }
 });
 
-I("#allUsersToggle").click((e, _, ele) => {
-   const is = ele.parentNode.parentNode.classList.contains("active");
+I("#allUsersToggle").click(() => {
+   const is = normalProfiles.classList.contains("active");
    const savedData = getDataFromLocalStorage(STORAGE_KEY);
    savedData.isOpenAllUsers = is;
    setDataFromLocalStorage(STORAGE_KEY, savedData);
 });
 
-I("#executeUserToggle").click((e, _, ele) => {
-   const is = ele.parentNode.parentNode.classList.contains("active");
+I("#executeUserToggle").click(() => {
+   const is = executeProfiles.classList.contains("active");
    const savedData = getDataFromLocalStorage(STORAGE_KEY);
    savedData.isOpenExecuteUsers = is;
    setDataFromLocalStorage(STORAGE_KEY, savedData);
@@ -252,178 +201,33 @@ I(".inc-dec .in-de").click(async (_, __, e) => {
    }
 });
 
-const scrollNormal = I(".scroll.normal")[0];
-const scrollExecute = I(".scroll.execute")[0];
-
-scrollNormal.click((_, __, ele) => {
-   let users = [...ele.children];
-   const allUsersChecked = users.filter((e) => e.firstChild.checked);
-
-   if (isUnCompleteChecked(users)) selectAll.checked = true;
-   else selectAll.checked = false;
-
-   if (isCompleteChecked(users)) completed.checked = true;
-   else completed.checked = false;
-
-   selectedResultN.innerText = allUsersChecked.length;
-});
-
-scrollExecute.click((_, __, ele) => {
-   let users = [...ele.children];
-   const allUsersChecked = users.filter((e) => e.firstChild.checked);
-
-   if (users.length && users.length === allUsersChecked.length)
-      selectAllExe.checked = true;
-   else selectAllExe.checked = false;
-
-   selectedResultE.innerText = allUsersChecked.length;
-});
 
 selectAll.click((_, __, ele) => {
    const isChecked = ele.checked;
-   const users = [...scrollNormal.children];
-   const usersNew = users.filter(
-      (e) => !e.children[5].classList.contains("complete")
-   );
-   usersNew.forEach((e) => (e.firstChild.checked = isChecked));
-   selectedResultN.innerText = users.filter((e) => e.firstChild.checked).length;
-   showSelected();
+   const profiles = [...scrollNormal.children].filter((e) => !e.classList.contains("hide"));
+
+   notCompleted.checked = isChecked;
+   selectedResultN.innerText = isChecked ? profiles.length : 0;
+   selectProfiles(profiles, isChecked);
 });
 
-completed.click((_, __, ele) => {
+notCompleted.click((_, __, ele) => {
    const isChecked = ele.checked;
-   const users = [...scrollNormal.children];
-   const usersNew = users.filter((e) =>
-      e.children[5].classList.contains("complete")
-   );
-   usersNew.forEach((e) => (e.firstChild.checked = isChecked));
-   selectedResultN.innerText = users.filter((e) => e.firstChild.checked).length;
-   showSelected();
+   const profiles = [...scrollNormal.children].filter((e) => !e.classList.contains("complete") && !e.classList.contains("hide"));
+   selectProfiles(profiles, isChecked);
+   const updatedProfiles = getSelectedProfiles([...scrollNormal.children]);
+   selectedResultN.innerText = updatedProfiles.length;
 });
 
 selectAllExe.click((_, __, ele) => {
    const isChecked = ele.checked;
-   const users = [...scrollExecute.children];
-   const usersNew = users.filter(
-      (e) => !e.children[5].classList.contains("complete")
-   );
-   usersNew.forEach((e) => (e.firstChild.checked = isChecked));
-   selectedResultE.innerText = users.filter((e) => e.firstChild.checked).length;
-   showSelected();
+   const profiles = [...scrollExecute.children].filter((e) => !e.classList.contains("hide"));
+   selectedResultE.innerText = isChecked ? profiles.length : 0;
+   selectProfiles(profiles, isChecked);
 });
 
-executedSelectedAll.click(() => {
-   const users = [...scrollNormal.children];
-   const selectedUsers = users.filter((e) => e.firstChild.checked);
-
-   selectedUsers.forEach((e) => {
-      const name = e.children[2].innerText;
-      userBlocks[name].clickAction();
-   });
-});
-
-closeExecuted.click(() => {
-   const users = [...scrollExecute.children];
-   const selectedUsers = users.filter((e) => e.firstChild.checked);
-
-   selectedUsers.forEach((e) => {
-      const name = e.children[2].innerText;
-      userBlocks[name].clickAction();
-   });
-});
-
-I("#updateButton").click(async () => {
-   const DATA = getDataFromLocalStorage(STORAGE_KEY);
-
-   const username = DATA.username;
-   const settings = { ...DATA };
-   const users = [...selectedUsers.children].map((u) => u.innerText);
-
-   delete settings.isOpenAllUsers;
-   delete settings.isOpenExecuteUsers;
-   delete settings.numOfExecute;
-   delete settings.username;
-
-   showLoading();
-   for (const user of users) {
-      const profileSettingsRef = GET_REF(user).profileSettings;
-      await profileSettingsRef.update(settings);
-   }
-   hideFloatingWindow();
-});
-
-I("#reloadBtn").click(async () => {
-   const DATA = getDataFromLocalStorage(STORAGE_KEY);
-
-   const username = DATA.username;
-   const settings = { reload_ID: Date.now() };
-   DATA.reload_ID = settings.reload_ID;
-   setDataFromLocalStorage(STORAGE_KEY, DATA);
-   
-   const users = [...selectedUsers.children].map((u) => u.innerText);
-
-   showLoading();
-   for (const user of users) {
-      const profileSettingsRef = GET_REF(user).profileSettings;
-      await profileSettingsRef.update(settings);
-   }
-   hideFloatingWindow();
-});
-
-I("#stopBtn").click(async () => {
-   const DATA = getDataFromLocalStorage(STORAGE_KEY);
-
-   const username = DATA.username;
-   const settings = { stop_ID: Date.now() };
-   DATA.stop_ID = settings.stop_ID;
-   setDataFromLocalStorage(STORAGE_KEY, DATA);
-
-   const users = [...selectedUsers.children].map((u) => u.innerText);
-
-   showLoading();
-   for (const user of users) {
-      const profileSettingsRef = GET_REF(user).profileSettings;
-      await profileSettingsRef.update(settings);
-   }
-   hideFloatingWindow();
-});
-
-function showSelected() {
-   selectedUsers.innerText = "";
-   const users = [...scrollNormal.children, ...scrollExecute.children];
-   const userSelected = users.filter((e) => e.firstChild.checked);
-
-   userSelected.forEach((ele) => {
-      const name = ele.children[2].innerText;
-      let closeEle;
-      CE(
-         { tag: "span", class: "u-name" },
-         CE({ tag: "x" }, name),
-         (closeEle = CE({ tag: "i", class: "sbi-close close" }))
-      ).parent(selectedUsers);
-
-      closeEle.click(
-         () => {
-            ele.firstChild.checked = false;
-            showSelected();
-         },
-         { once: true }
-      );
-   });
-}
-showSelected();
-
-I(".logout").click(() => {
-   showAlert(
-      {
-         message: "Are you sure you want to log out?",
-         btnText: "No",
-         optionalBtnText: "Yes",
-      },
-      hideFloatingWindow,
-      async () => {
-         signOutUser();
-         setupUserForm();
-      }
-   );
-});
+I("#executeAllButton").click(executeAll);
+I("#reloadBtn").click(reloadSelectedProfiles);
+I("#stopBtn").click(stopSelectedProfiles);
+I("#updateButton").click(updateAllProfilesSettings);
+I(".logout").click(logoutUser);

@@ -23,9 +23,6 @@ auth.onAuthStateChanged(async (user) => {
    }
 });
 
-const normalUsers = I("#normalUsers .scroll")[0];
-const executeUsers = I("#executeUsers .scroll")[0];
-
 const moveUser = asyncHandler(async (username) => {
    showLoading();
 });
@@ -35,11 +32,10 @@ async function setup() {
    const { yy, mm, dd } = date();
    if (DATA.username) username = DATA.username;
 
-   I("#normalUsers").toggle("active", DATA.isOpenAllUsers);
-   I("#executeUsers").toggle("active", DATA.isOpenExecuteUsers);
+   I("#normalProfiles").toggle("active", DATA.isOpenAllUsers);
+   I("#executeProfiles").toggle("active", DATA.isOpenExecuteUsers);
    I("#executeLimit")[0].value = DATA.numOfExecute;
    LOCAL_SAVED.numOfExecute = DATA.numOfExecute;
-   const USERS = [];
 
    const profileNamesRef = GET_REF().names;
    const executeRef = GET_REF().execute;
@@ -47,11 +43,7 @@ async function setup() {
    await profileNamesRef.get().then((snapshot) => {
       if (snapshot.exists()) {
          const names = snapshot.val();
-         for (const name in names) {
-            userBlocks[name] = new UserBlock(normalUsers, name, username);
-            USERS.push(name);
-            userBlocks[name].connectDB();
-         }
+         manageProfiles = new ManageProfiles(names, scrollNormal, scrollExecute, showSelectedParent);
       }
    });
 
@@ -65,42 +57,18 @@ async function setup() {
                limit: limit || 0,
                pending: {},
                process: {},
-               queue: arrayToObject(USERS),
+               queue: updateObjectDate(manageProfiles.profiles),
                requests: {},
             }).then(console.log);
          }
       })
    );
-
-   executeRef.on("value", (snapshot) => {
-      if (snapshot.exists()) {
-         changeUsersParentAll(snapshot.val());
-      }
-   });
 }
 
-function changeUsersParentAll(value) {
-   parent.innerHTML = "";
-   const { pending, process, queue } = value;
-   changeUsersParent(queue);
-   changeUsersParent(process, false, true);
-   changeUsersParent(pending, false);
-}
+executedSelectedAll.click(() => {
+   manageProfiles.executeAllProfiles();
+});
 
-function changeUsersParent(usernames = {}, isQueue = true, isProcess) {
-   const parent = isQueue ? normalUsers : executeUsers;
-   // parent.innerHTML = "";
-   for (const key in usernames) {
-      userBlocks[key].updateParent(parent);
-      userBlocks[key].updateRunningStatus(false);
-   }
-   if (!isQueue && isProcess) {
-      for (const key in usernames) {
-         userBlocks[key].updateRunningStatus(true);
-      }
-   }
-   const s1 = [...scrollNormal.children].filter((e) => e.firstChild.checked);
-   const s2 = [...scrollExecute.children].filter((e) => e.firstChild.checked);
-   selectedResultN.innerText = s1.length;
-   selectedResultE.innerText = s2.length;
-}
+closeExecuted.click(() => {
+   manageProfiles.closeAllProfiles();
+});

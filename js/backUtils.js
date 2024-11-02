@@ -45,13 +45,12 @@ const signinUser = async (username, password) => {
    }
 };
 
-I("#startBtn").click(async (_, __, e) => {
+async function executeAll(_, __, e) {
    const executeLimitValue = I("#executeLimit").value;
 
    if (executeLimitValue !== LOCAL_SAVED.numOfExecute) {
       showLoading();
       const savedData = getDataFromLocalStorage(STORAGE_KEY);
-      const username = savedData.username;
       LOCAL_SAVED.numOfExecute = savedData.numOfExecute = executeLimitValue;
 
       const executeRef = GET_REF().execute;
@@ -60,4 +59,77 @@ I("#startBtn").click(async (_, __, e) => {
       e.parentNode.classList.remove("not-updated");
       hideFloatingWindow();
    }
-});
+}
+
+async function reloadSelectedProfiles() {
+   const DATA = getDataFromLocalStorage(STORAGE_KEY);
+   
+   const settings = { reload_ID: Date.now() };
+   DATA.reload_ID = settings.reload_ID;
+   setDataFromLocalStorage(STORAGE_KEY, DATA);
+   
+   const profiles = getSelectedProfileNames();
+   
+   showLoading();
+   for (const profile of profiles) {
+      const profileSettingsRef = GET_REF(profile).profileSettings;
+      await profileSettingsRef.update(settings);
+   }
+   hideFloatingWindow();
+}
+
+async function stopSelectedProfiles() {
+   const DATA = getDataFromLocalStorage(STORAGE_KEY);
+
+   const settings = { stop_ID: Date.now() };
+   DATA.stop_ID = settings.stop_ID;
+   setDataFromLocalStorage(STORAGE_KEY, DATA);
+
+   const profiles = getSelectedProfileNames();
+
+   showLoading();
+   for (const profile of profiles) {
+      const profileSettingsRef = GET_REF(profile).profileSettings;
+      await profileSettingsRef.update(settings);
+   }
+   hideFloatingWindow();
+}
+
+async function logoutUser() {
+   showAlert(
+      {
+         message: "Are you sure you want to log out?",
+         btnText: "No",
+         optionalBtnText: "Yes",
+      },
+      hideFloatingWindow,
+      async () => {
+         signOutUser();
+         setupUserForm();
+      }
+   );
+}
+
+async function updateAllProfilesSettings() {
+   const DATA = getDataFromLocalStorage(STORAGE_KEY);
+   const settings = { ...DATA };
+   const profiles = getSelectedProfileNames();
+
+   delete settings.isOpenAllUsers;
+   delete settings.isOpenExecuteUsers;
+   delete settings.numOfExecute;
+   delete settings.username;
+
+   showLoading();
+   for (let i = 0; i < profiles.length; i++) {
+      const name = profiles[i];
+      if (i === profiles.length - 2) await updateProfileSettings(name, settings);
+      else updateProfileSettings(name, settings);
+   }
+   hideFloatingWindow();
+}
+
+async function updateProfileSettings(name, settings) {
+   const profileSettingsRef = GET_REF(name).profileSettings;
+   await profileSettingsRef.update(settings);
+}
