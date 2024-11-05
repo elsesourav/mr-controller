@@ -112,30 +112,32 @@ class Graph {
    }
 
    #addEventListeners() {
-      const { left, width } = this.cvs.getBoundingClientRect();
-
+      
       const startSelection = (event) => {
+         const { left, width } = this.cvs.getBoundingClientRect();
          this.isSelecting = true;
          const offsetX = event.touches ? event.touches[0].clientX : event.offsetX;
          this.selectionEnd = this.selectionStart = map(offsetX, left, width, 0, this.width);
       };
-
+      
       const moveSelection = (event) => {
+         const { width } = this.cvs.getBoundingClientRect();
          if (this.isSelecting) {
             const offsetX = event.touches ? event.touches[0].clientX : event.offsetX;
             this.selectionEnd = map(offsetX, 0, width, 0, this.width);
             this.#drawSelection();
          }
       };
-
+      
       const endSelection = () => {
          if (this.isSelecting) {
             this.isSelecting = false;
             this.#zoomToSelection();
          }
       };
-
+      
       const showDataPoint = (event) => {
+         const { width } = this.cvs.getBoundingClientRect();
          const offsetX = event.touches ? event.touches[0].clientX : event.offsetX;
          const index = Math.floor(map(offsetX, 0, width, 0, this.data.length));
          this.highlightedIndex = index;
@@ -203,33 +205,14 @@ class Graph {
    }
 
    #showDataPointDiv(event, dataValue) {
-      const existingDiv = document.getElementById('data-point-div');
-      if (existingDiv) {
-         existingDiv.remove();
-      }
+      const { total, date } = dataValue;
+      
+      const showGraphData = document.getElementById("showGraphData");
+      showGraphData.innerHTML = `Points: ${total}<br>Date: ${date}`;
 
-      const div = document.createElement('div');
-      div.id = 'data-point-div';
-      Object.assign(div.style, {
-         position: 'absolute',
-         backgroundColor: 'white',
-         border: '1px solid black',
-         padding: '5px',
-         zIndex: 1000,
-         pointerEvents: 'none',
-         userSelect: 'none',
-         touchAction: 'none',
-         fontFamily: 'system-ui'
-      });
-      div.innerText = `Points: ${dataValue}`;
-
-      // Position the div at the click location
       const offsetX = event.touches ? event.touches[0].clientX : event.clientX;
       const offsetY = event.touches ? event.touches[0].clientY : event.clientY;
-      div.style.left = `${offsetX}px`;
-      div.style.top = `${offsetY}px`;
-
-      // Append the div to the body
-      document.body.appendChild(div);
+      showGraphData.style.left = `${offsetX}px`;
+      showGraphData.style.top = `${offsetY}px`;
    }
 }

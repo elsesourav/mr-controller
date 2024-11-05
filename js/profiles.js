@@ -130,31 +130,35 @@ class ManageProfiles {
          let DATA = snap.val();
          delete DATA.total;
          const data = [];
-         
+
          // Ensure DATA is treated as an object
          if (Array.isArray(DATA)) {
             DATA = Object.assign({}, DATA);
          }
-         
+
          Object.keys(DATA).forEach(key => {
             const _DATA = DATA[key];
             const _data = [];
-            
+
             Object.keys(_DATA).forEach(_key => {
                const _d = _DATA[_key];
                if (Array.isArray(_d)) {
-                  _d.forEach(e => e && _data.push(e));
+                  _d.forEach((e, i) => {
+                     const date = `${key}/${_key}/${i}`;
+                     if (e) _data.push({ ...e, date });
+                  });
                } else {
-                  for (const key in _d) {
-                     _data.push(_d[key]);
+                  for (const k in _d) {
+                     const date = `${key}/${_key}/${k}`;
+                     _data.push({ ..._d[k], date });
                   }
                }
             });
-            
+
             graphViewerName.innerText = name;
             data.push(..._data);
          });
-         
+
          this.graph.setup(data);
       }
    }

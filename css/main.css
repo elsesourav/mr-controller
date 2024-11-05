@@ -101,6 +101,20 @@ body {
       z-index: 1;
    }
 
+   #showGraphData {
+      position: fixed;
+      background-color: white;
+      border: 1px solid black;
+      padding: 5px;
+      z-index: 1000;
+      pointer-events: none;
+      user-select: none;
+      touch-action: none;
+      font-family: f1b;
+      font-size: calc(var(--s) * 1);
+      color: light-dark(#fff, #000);
+   }
+
    canvas {
       position: absolute;
       width: 100%;
