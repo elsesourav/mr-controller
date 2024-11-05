@@ -37,6 +37,9 @@ const saveStorage = () => {
    [...I(".controls .inp-limit")].forEach((input) => {
       input.value = DATA[input.name];
    });
+
+   // show in profile section
+   I("#userNameTitle")[0].innerText = `Hello ${DATA.username}!`;
 })();
 
 const autoInputCheckbox = I(".basic-grid .inp-checkbox");
@@ -249,3 +252,26 @@ closeExecuted.click(() => {
    manageProfiles.closeAllProfiles();
    selectProfiles([...scrollExecute.children], false);
 });
+
+
+let isAscending = false;
+
+const handleSorting = () => {
+   const [orderBy, orderType] = I("._profiles_ .options input:checked");
+   const isDescending = orderType.getAttribute("id") === "descendingOrder";
+   const isOrderByName = orderBy.getAttribute("id") === "sortingByName";
+
+   if (isOrderByName) {
+      manageProfiles.sortingGraphProfilesByName(isDescending);
+   } else {
+      manageProfiles.sortingGraphProfilesByValue(isDescending);
+   }
+};
+
+const handleGraphRange = () => {
+   const [range] = I("#graphConfig .options input:checked");
+   graph.setRange(range.getAttribute("id"));
+};
+
+I("._profiles_ .options input[type='radio']").click(handleSorting);
+I("#graphConfig .options input[type='radio']").click(handleGraphRange);

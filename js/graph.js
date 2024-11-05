@@ -8,19 +8,41 @@ class Graph {
       this.selectionStart = 0;
       this.selectionEnd = 0;
       this.highlightedIndex = null;
+      this.isProfiles = false;
+      this.range = "week";
       this.#addEventListeners();
    }
 
-   setup(data) {
-      this.totals = data.map(e => e.total);
-      this.data = [...data];
+   setup(data, isProfiles = false) {
+      this.isProfiles = isProfiles;
+      let modifiedData = [...data];
+      if (!isProfiles) {
+         if (this.range === "week") {
+            modifiedData = modifiedData.slice(0, 7);
+         } else if (this.range === "month") {
+            modifiedData = modifiedData.slice(0, 30);
+         } else if (this.range === "year") {
+            modifiedData = modifiedData.slice(0, 365);
+         }
+      } else {
+         modifiedData.sort((a, b) => b.total - a.total);
+      }
+      this.data = modifiedData;
       this.originalData = [...data];
+      this.totals = modifiedData.map(e => e.total);
+      
+      this.highlightedIndex = null;
+      showGraphData.classList.remove("active");
       this.#drawGraph();
    }
 
+   setRange(range) {
+      this.range = range;
+      this.setup(this.originalData, this.isProfiles);
+   }
+
    draw() {
-      this.data = this.originalData;
-      this.#drawGraph();
+      this.setup(this.originalData, this.isProfiles);
    }
 
    #drawGraph() {
@@ -64,19 +86,23 @@ class Graph {
          this.ctx.stroke();
       }
       if (thickness > 30) {
-         const { isActivitiesComplete, mobile, pc } = dataValue;
-
+         
          let str = ` _ ${dataValue.total} _\n _ `;
-         if (mobile?.progress) str += mobile.progress;
-         if (pc?.progress) str += `+${pc.progress}`;
-         if (isActivitiesComplete) str += `+E _ `;
+         if (this.isProfiles) {
+            str += `${dataValue.name} _ `;
+         } else {
+            const { isActivitiesComplete, mobile, pc } = dataValue;
+            if (mobile?.progress) str += mobile.progress;
+            if (pc?.progress) str += `+${pc.progress}`;
+            if (isActivitiesComplete) str += `+E _ `;
+         }
 
          this.ctx.fillStyle = "white";
-         this.ctx.font = `${thickness * 0.15}px Arial`;
+         this.ctx.font = `${Math.min(thickness * 0.15, 40)}px Arial`;
          this.ctx.textAlign = "center";
          this.ctx.fillStyle = "black";
 
-         const textWidth = this.ctx.measureText(str).width;
+         // const textWidth = this.ctx.measureText(str).width;
          const textHeight = parseInt(this.ctx.font);
          const textX = x + thickness / 2;
          const textY = this.height - 5;
@@ -95,6 +121,10 @@ class Graph {
    }
 
    #getColor(index) {
+      if (this.isProfiles) {
+         const deg = map(index, 0, this.data.length, 140, 0);
+         return `hsl(${deg}, 100%, 50%)`;
+      }
       const { isActivitiesComplete, mobile, pc } = this.data[index];
       const eventPoint = 5;
       const event = isActivitiesComplete ? eventPoint : 0;
@@ -163,6 +193,10 @@ class Graph {
       });
 
       this.cvs.addEventListener("click", showDataPoint);
+
+      addEventListener("scroll", () => {
+         showGraphData.classList.remove("active");
+      });
    }
 
    #drawSelection() {
@@ -205,10 +239,16 @@ class Graph {
    }
 
    #showDataPointDiv(event, dataValue) {
-      const { total, date } = dataValue;
+      console.log(event, dataValue);
       
-      const showGraphData = document.getElementById("showGraphData");
-      showGraphData.innerHTML = `Points: ${total}<br>Date: ${date}`;
+      showGraphData.classList.add("active");
+      if (this.isProfiles) {
+         const { name, total } = dataValue;
+         showGraphData.innerHTML = `${name}: ${total}`;
+      } else {
+         const { total, date } = dataValue;
+         showGraphData.innerHTML = `Points: ${total}<br>Date: ${date}`;
+      }
 
       const offsetX = event.touches ? event.touches[0].clientX : event.clientX;
       const offsetY = event.touches ? event.touches[0].clientY : event.clientY;

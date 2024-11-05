@@ -33,7 +33,7 @@ const LOCAL_SAVED = {
 };
 
 const userBlocks = {};
-let username, manageProfiles;
+let username, manageProfiles, graph;
 
 function GET_REF(accountName = "////") {
    const { yy, mm, dd } = date();

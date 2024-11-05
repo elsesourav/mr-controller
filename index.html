@@ -17,6 +17,7 @@
    <link rel="stylesheet" href="./css/control.css" />
    <link rel="stylesheet" href="./css/home.css" />
    <link rel="stylesheet" href="./css/profile.css" />
+   <link rel="stylesheet" href="./css/status.css" />
    <link rel="stylesheet" href="./css/floatingWindow.css" />
 
    <!-- -------------------------------------------------------------
@@ -29,11 +30,11 @@
    <script defer src="./js/utils.js"></script>
    <script defer src="./js/querySelector.js"></script>
    <script defer src="./js/helper.js"></script>
+   <script defer src="./js/graph.js"></script>
+   <script defer src="./js/status.js"></script>
    <script defer src="./js/backUtils.js"></script>
    <script defer src="./js/profiles.js"></script>
    <script defer src="./js/control.js"></script>
-   <script defer src="./js/graph.js"></script>
-   <script defer src="./js/status.js"></script>
    <script defer src="./js/back.js"></script>
 </head>
 
@@ -62,7 +63,7 @@
             <label for="btn">CONTROL</label>
          </div>
          <div class="btn">
-            <input type="radio" name="btn" id="status" class="option-btn"  value="STATUS" />
+            <input type="radio" name="btn" id="status" class="option-btn" value="STATUS" />
             <label for="btn">STATUS</label>
          </div>
          <div class="btn">
@@ -103,7 +104,7 @@
                <p>RUN</p>
                <i class="sbi-select-all"></i>
             </div>
-            
+
             <div id="allUsersToggle" class="toggle">
                <i class="sbi-chevron-down"></i>
                <div id="showNormalProfilesSize" class="count">0</div>
@@ -185,9 +186,9 @@
                      <input type="checkbox" name="auto_complete" id="autoComplete" class="inp-checkbox" />
                   </div>
                </div>
-   
+
                <span class="br-tag"></span>
-   
+
                <div class="basic-grid auto auto-complete-inputs">
                   <div class="take-inp only-switch" style="--d: 0ms">
                      <span>PC Search</span>
@@ -195,7 +196,8 @@
                   </div>
                   <div class="take-inp only-switch" style="--d: 1ms">
                      <span>Mobile Search</span>
-                     <input type="checkbox" name="auto_mobile_search" id="autoMobileSearch" class="inp-checkbox" checked />
+                     <input type="checkbox" name="auto_mobile_search" id="autoMobileSearch" class="inp-checkbox"
+                        checked />
                   </div>
                   <div class="take-inp only-switch" style="--d: 2ms">
                      <span>Daily Event</span>
@@ -203,7 +205,8 @@
                   </div>
                   <div class="take-inp only-switch" style="--d: 3ms">
                      <span>Banner Event</span>
-                     <input type="checkbox" name="auto_banner_event" id="autoBannerEvent" class="inp-checkbox" checked />
+                     <input type="checkbox" name="auto_banner_event" id="autoBannerEvent" class="inp-checkbox"
+                        checked />
                   </div>
                   <div class="take-inp only-switch" style="--d: 4ms">
                      <span>Recheck at Last</span>
@@ -218,7 +221,7 @@
                      <input type="checkbox" name="auto_close" id="autoClose" class="inp-checkbox" checked />
                   </div>
                </div>
-   
+
                <div class="basic-grid auto manually-search-inputs">
                   <div class="take-inp two-input one-line" style="--d: 0ms">
                      <section>
@@ -284,9 +287,9 @@
                      <input type="checkbox" name="banner_event" id="bannerEvent" class="inp-checkbox" />
                   </div>
                </div>
-   
+
                <span class="br-tag"></span>
-   
+
                <div class="basic-grid fixed">
                   <div class="take-inp one two-input">
                      <span>Search Delay</span>
@@ -319,15 +322,15 @@
                      </section>
                   </div>
                </div>
-   
+
                <span class="br-tag"></span>
-   
+
                <div class="btn">
                   <button id="updateButton">UPDATE</button>
                </div>
-   
+
                <span class="br-tag"></span>
-   
+
                <div class="buttons">
                   <div id="reloadBtn" class="btn">
                      <p>RELOAD</p>
@@ -338,7 +341,7 @@
                      <i class="sbi-stop"></i>
                   </div>
                </div>
-   
+
                <span class="br-tag"></span>
             </section>
          </div>
@@ -350,22 +353,76 @@
    <!-- -------------------------------------------------------------
                                     Status
       -------------------------------------------------------------- -->
-   <div class="status-section">
+   <div class="status-section" id="statusSection">
+      <div class="config _profiles_">
+         <section>
+            <div class="name">Sorting By</div>
+            <div class="options">
+               <div class="option">
+                  <input type="radio" name="sortingBy" id="sortingByName" checked />
+                  <label for="sortingByName">Name</label>
+               </div>
+               <div class="option">
+                  <input type="radio" name="sortingBy" id="sortingByValue" />
+                  <label for="sortingByValue">Value</label>
+               </div>
+            </div>
+         </section>
+         <section>
+            <div class="name">Sorting Order</div>
+            <div class="options">
+               <div class="option">
+                  <input type="radio" name="sortingOrder" id="ascendingOrder" checked />
+                  <label for="ascendingOrder">Ascending</label>
+               </div>
+               <div class="option">
+                  <input type="radio" name="sortingOrder" id="descendingOrder" />
+                  <label for="descendingOrder">Descending</label>
+               </div>
+            </div>
+         </section>
+      </div>
       <div class="marge graph">
          <div class="scroll" id="scrollGraph"></div>
       </div>
-      <div class="container" id="CONTAINER">
+
+      <div class="config _graph_" id="graphConfig">
          <div id="graphViewerName"></div>
+         <section>
+            <div class="name">Show By</div>
+            <div class="options graph-range">
+               <div class="option">
+                  <input type="radio" name="showRange" id="week" checked />
+                  <label for="week">Week</label>
+               </div>
+               <div class="option">
+                  <input type="radio" name="showRange" id="month" />
+                  <label for="month">Month</label>
+               </div>
+               <div class="option">
+                  <input type="radio" name="showRange" id="year" />
+                  <label for="year">Year</label>
+               </div>
+               <div class="option">
+                  <input type="radio" name="showRange" id="allTime" />
+                  <label for="allTime">All Time</label>
+               </div>
+            </div>
+         </section>
+      </div>
+      <div class="container" id="CONTAINER">
          <div id="showGraphData"></div>
          <canvas id="CANVAS"></canvas>
       </div>
+      <div class="gap"></div>
    </div>
 
    <!-- -------------------------------------------------------------
                                     User
       -------------------------------------------------------------- -->
    <div class="profile-section">
-      <h1>Profile Section</h1>
+      <div class="gap"></div>
+      <h1 id="userNameTitle">Profile Section</h1>
       <div class="user-btn">
          <div class="logout">LogOut</div>
       </div>

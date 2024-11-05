@@ -44,7 +44,7 @@ async function setup() {
    await profileNamesRef.get().then((snapshot) => {
       if (snapshot.exists()) {
          const names = snapshot.val();
-         manageProfiles = new ManageProfiles(names, scrollNormal, scrollExecute, showSelectedParent, scrollGraph);
+         manageProfiles = new ManageProfiles(names, scrollNormal, scrollExecute, showSelectedParent, graph, scrollGraph);
       }
    });
 

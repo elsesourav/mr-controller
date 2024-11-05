@@ -1,22 +1,22 @@
 class ManageProfiles {
-   constructor(profiles, queueParent, processParent, showSelectedParent, graphParent) {
+   constructor(profiles, queueParent, processParent, showSelectedParent, graph, graphParent) {
       this.profiles = profiles;
       this.queueParent = queueParent;
       this.processParent = processParent;
       this.showSelectedParent = showSelectedParent;
+      this.graph = graph;
       this.graphParent = graphParent;
       this.queueProfiles = [];
       this.processProfiles = [];
       this.graphProfiles = [];
       this.showSelected = {};
       this.#setup();
-      this.graph = new Graph(canvas, ctx);
    }
 
    #setup() {
       this.#createProfileQueueAndProcess();
       this.#createSelectedProfiles();
-      this.#createGraph();
+      this.#createGraphProfiles();
       this.profilesDB = new Profiles(this.profiles, this.queueProfiles, this.processProfiles, this.graphProfiles);
 
       asyncHandler(async () => {
@@ -95,7 +95,7 @@ class ManageProfiles {
       }
    }
 
-   #createGraph() {
+   #createGraphProfiles() {
       const keys = Object.keys(this.profiles);
       for (let i = 0; i < keys.length; i++) {
          const name = keys[i];
@@ -116,14 +116,55 @@ class ManageProfiles {
          this.graphParent.append(element);
          this.graphProfiles.push({ element, name, index, total });
          element.click(() => {
-            this.#setupGraph(name);
-            this.graphProfiles.forEach(e => e.element.firstChild.checked = false);
+            this.#setupGraphByName(name);
+            graphConfig.classList.add("active");
+            this.removeGraphSelections();
             element.firstChild.checked = true;
          });
       }
    }
 
-   async #setupGraph(name) {
+   removeGraphSelections() {
+      this.graphProfiles.forEach(e => e.element.firstChild.checked = false);
+   }
+
+   sortingGraphProfilesByName(isDescending) {
+      const profiles = [...this.graphParent.children];
+      profiles.sort((a, b) => {
+         return isDescending ? b.getAttribute("name").localeCompare(a.getAttribute("name")) : a.getAttribute("name").localeCompare(b.getAttribute("name"));
+      });
+      this.graphParent.append(...profiles);
+      this.#updateGraphProfilesIndex();
+   }
+
+   sortingGraphProfilesByValue(isDescending) {
+      const profiles = [...this.graphParent.children];
+      profiles.sort((a, b) => {
+         return isDescending ? b.getAttribute("points") - a.getAttribute("points") : a.getAttribute("points") - b.getAttribute("points");
+      });
+      this.graphParent.append(...profiles);
+      this.#updateGraphProfilesIndex();
+   }
+
+   #updateGraphProfilesIndex() {
+      const updatedProfiles = [...this.graphParent.children];
+      for (let i = 0; i < updatedProfiles.length; i++) {
+         updatedProfiles[i].children[1].innerText = i + 1;
+      }
+   }
+
+   async setupGraphByProfiles() {
+      const profiles = this.graphProfiles.map((profile) => {
+         return {
+            name: profile.name,
+            total: Number(profile.total.innerText),
+         }
+      });
+      this.graph.setup(profiles, true);
+      graphViewerName.innerText = "ALL";
+   }
+
+   async #setupGraphByName(name) {
       const pointsRef = GET_REF(name).profilePoints;
       const snap = await pointsRef.get();
       if (snap.exists()) {
@@ -332,6 +373,7 @@ class Profiles {
                   this.queueProfiles[i].total.innerText = value;
                   this.processProfiles[i].total.innerText = value;
                   this.graphProfiles[i].total.innerText = value;
+                  this.graphProfiles[i].element.setAttribute("points", value);
                }
             });
 
