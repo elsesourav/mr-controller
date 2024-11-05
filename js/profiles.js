@@ -1,19 +1,23 @@
 class ManageProfiles {
-   constructor(profiles, queueParent, processParent, showSelectedParent) {
+   constructor(profiles, queueParent, processParent, showSelectedParent, graphParent) {
       this.profiles = profiles;
       this.queueParent = queueParent;
       this.processParent = processParent;
       this.showSelectedParent = showSelectedParent;
-      this.queueProfile = [];
-      this.processProfile = [];
+      this.graphParent = graphParent;
+      this.queueProfiles = [];
+      this.processProfiles = [];
+      this.graphProfiles = [];
       this.showSelected = {};
       this.#setup();
+      this.graph = new Graph(canvas, ctx);
    }
 
    #setup() {
       this.#createProfileQueueAndProcess();
       this.#createSelectedProfiles();
-      this.profilesDB = new Profiles(this.profiles, this.queueProfile, this.processProfile);
+      this.#createGraph();
+      this.profilesDB = new Profiles(this.profiles, this.queueProfiles, this.processProfiles, this.graphProfiles);
 
       asyncHandler(async () => {
          const executedRef = GET_REF().execute;
@@ -25,7 +29,8 @@ class ManageProfiles {
 
    #updateProfiles(values) {
       const { queue, process, pending, limit } = values;
-      executeLimit.innerText = limit;
+
+      this.#saveExecuteLimit(limit);
       this.#updateQueueElements(queue);
       this.#updateProcessElements({ ...process, ...pending });
       this.#setupRunningProfiles(process);
@@ -34,38 +39,54 @@ class ManageProfiles {
       this.#setProfilesIndex(this.processParent);
    }
 
+   #saveExecuteLimit(limit) {
+      const DATA = getDataFromLocalStorage(STORAGE_KEY);
+      DATA.numOfExecute = limit;
+      setDataFromLocalStorage(STORAGE_KEY, DATA);
+   }
+
    #updateQueueElements(profiles = {}) {
       let count = 0;
-      for (let i = 0; i < this.queueProfile.length; i++) {
-         const profile = this.queueProfile[i];
+      let size = 0;
+      for (let i = 0; i < this.queueProfiles.length; i++) {
+         const profile = this.queueProfiles[i];
          if (profiles[profile.name]) {
             profile.element.classList.remove("hide");
          } else {
             profile.element.classList.add("hide");
          }
-         if (!profile.element.classList.contains("hide") && profile.element.firstChild.checked) count++;
+         if (!profile.element.classList.contains("hide")) {
+            size++;
+            if (profile.element.firstChild.checked) count++;
+         }
       }
       selectedResultN.innerText = count;
+      showNormalProfilesSize.innerText = size;
    }
 
    #updateProcessElements(profiles = {}) {
       let count = 0;
-      for (let i = 0; i < this.processProfile.length; i++) {
-         const profile = this.processProfile[i];
+      let size = 0;
+      for (let i = 0; i < this.processProfiles.length; i++) {
+         const profile = this.processProfiles[i];
          if (profiles[profile.name]) {
             profile.element.classList.remove("hide");
          } else {
             profile.element.classList.add("hide");
          }
          profile.element.classList.remove("running");
-         if (!profile.element.classList.contains("hide") && profile.element.firstChild.checked) count++;
+         if (!profile.element.classList.contains("hide")) {
+            size++;
+            if (profile.element.firstChild.checked) count++;
+         }
       }
       selectedResultE.innerText = count;
+      showExecuteProfilesSize.innerText = size;
    }
 
    #setupRunningProfiles(profiles = {}) {
-      for (let i = 0; i < this.processProfile.length; i++) {
-         const profile = this.processProfile[i];
+      for (let i = 0; i < this.processProfiles.length; i++) {
+         const profile = this.processProfiles[i];
 
          if (profiles[profile.name]) {
             this.processParent.insertBefore(profile.element, this.processParent.firstChild);
@@ -74,9 +95,73 @@ class ManageProfiles {
       }
    }
 
+   #createGraph() {
+      const keys = Object.keys(this.profiles);
+      for (let i = 0; i < keys.length; i++) {
+         const name = keys[i];
+         let element, total, index, points;
+
+         element = CE(
+            { class: "profile view", name: name },
+            CE({ tag: "input", class: "profile-check", type: "checkbox" }),
+            (index = CE({ class: "no" }, i + 1)),
+            CE({ class: "name" }, name),
+            CE(
+               { class: "sbi-wallet point" },
+               (total = CE({ tag: "span" }, 0))
+            ),
+            CE({ tag: "i" })
+         );
+
+         this.graphParent.append(element);
+         this.graphProfiles.push({ element, name, index, total });
+         element.click(() => {
+            this.#setupGraph(name);
+            this.graphProfiles.forEach(e => e.element.firstChild.checked = false);
+            element.firstChild.checked = true;
+         });
+      }
+   }
+
+   async #setupGraph(name) {
+      const pointsRef = GET_REF(name).profilePoints;
+      const snap = await pointsRef.get();
+      if (snap.exists()) {
+         let DATA = snap.val();
+         delete DATA.total;
+         const data = [];
+         
+         // Ensure DATA is treated as an object
+         if (Array.isArray(DATA)) {
+            DATA = Object.assign({}, DATA);
+         }
+         
+         Object.keys(DATA).forEach(key => {
+            const _DATA = DATA[key];
+            const _data = [];
+            
+            Object.keys(_DATA).forEach(_key => {
+               const _d = _DATA[_key];
+               if (Array.isArray(_d)) {
+                  _d.forEach(e => e && _data.push(e));
+               } else {
+                  for (const key in _d) {
+                     _data.push(_d[key]);
+                  }
+               }
+            });
+            
+            graphViewerName.innerText = name;
+            data.push(..._data);
+         });
+         
+         this.graph.setup(data);
+      }
+   }
+
    #createProfileQueueAndProcess() {
-      this.#createProfileElements(this.queueParent, "RUN", this.queueProfile);
-      this.#createProfileElements(this.processParent, "CLOSE", this.processProfile);
+      this.#createProfileElements(this.queueParent, "RUN", this.queueProfiles);
+      this.#createProfileElements(this.processParent, "CLOSE", this.processProfiles);
    }
 
    #createSelectedProfiles() {
@@ -90,10 +175,10 @@ class ManageProfiles {
 
          closeEle.click(() => {
             closeEle.classList.add("hide");
-            const queueProfile = this.queueProfile.find((e) => e.name === name);
+            const queueProfile = this.queueProfiles.find((e) => e.name === name);
             queueProfile.element.firstChild.checked = false;
 
-            const processProfile = this.processProfile.find((e) => e.name === name);
+            const processProfile = this.processProfiles.find((e) => e.name === name);
             processProfile.element.firstChild.checked = false;
             this.setSelectedProfilesSize(this.queueParent, selectedResultN, selectAll);
             this.setSelectedProfilesSize(this.processParent, selectedResultE, selectAllExe);
@@ -118,7 +203,7 @@ class ManageProfiles {
          (index = CE({ class: "no" }, i)),
          CE({ class: "name" }, name),
          CE(
-            { class: "sbi-redeem point" },
+            { class: "sbi-wallet point" },
             (total = CE({ tag: "span" }, 0))
          ),
          CE(
@@ -175,10 +260,11 @@ class ManageProfiles {
 }
 
 class Profiles {
-   constructor(profiles, queueProfile, processProfile) {
+   constructor(profiles, queueProfile, processProfile, graphProfile) {
       this.profiles = profiles;
-      this.queueProfile = queueProfile;
-      this.processProfile = processProfile;
+      this.queueProfiles = queueProfile;
+      this.processProfiles = processProfile;
+      this.graphProfiles = graphProfile;
       this.#setup();
    }
 
@@ -188,13 +274,13 @@ class Profiles {
    }
 
    #addClickActions() {
-      for (let i = 0; i < this.queueProfile.length; i++) {
-         const profile = this.queueProfile[i];
+      for (let i = 0; i < this.queueProfiles.length; i++) {
+         const profile = this.queueProfiles[i];
          this.#queueClickAction(profile.name, profile.closeBtn);
       }
 
-      for (let i = 0; i < this.processProfile.length; i++) {
-         const profile = this.processProfile[i];
+      for (let i = 0; i < this.processProfiles.length; i++) {
+         const profile = this.processProfiles[i];
          this.#processClickAction(profile.name, profile.closeBtn);
       }
    }
@@ -239,8 +325,9 @@ class Profiles {
             await totalPointsRef.on("value", (snap) => {
                if (snap.exists()) {
                   const value = snap.val();
-                  this.queueProfile[i].total.innerText = value;
-                  this.processProfile[i].total.innerText = value;
+                  this.queueProfiles[i].total.innerText = value;
+                  this.processProfiles[i].total.innerText = value;
+                  this.graphProfiles[i].total.innerText = value;
                }
             });
 
@@ -253,18 +340,19 @@ class Profiles {
                   if (mobile?.progress) str += mobile.progress;
                   if (pc?.progress) str += `+${pc.progress}`;
                   if (isActivitiesComplete) str += `+E`;
-                  this.queueProfile[i].points.innerText = str;
-                  this.processProfile[i].points.innerText = str;
-
+                  this.queueProfiles[i].points.innerText = str;
+                  this.processProfiles[i].points.innerText = str;
 
                   const isComplete = isActivitiesComplete && mobile.max === mobile.progress && pc.max === pc.progress;
 
                   if (isComplete) {
-                     this.queueProfile[i].element.classList.add("complete");
-                     this.processProfile[i].element.classList.add("complete");
+                     this.queueProfiles[i].element.classList.add("complete");
+                     this.processProfiles[i].element.classList.add("complete");
+                     this.graphProfiles[i].element.classList.add("complete");
                   } else {
-                     this.queueProfile[i].element.classList.remove("complete");
-                     this.processProfile[i].element.classList.remove("complete");
+                     this.queueProfiles[i].element.classList.remove("complete");
+                     this.processProfiles[i].element.classList.remove("complete");
+                     this.graphProfiles[i].element.classList.remove("complete");
                   }
                }
             });

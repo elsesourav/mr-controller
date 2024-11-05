@@ -5,8 +5,8 @@ const scrollExecute = I("#scrollExecute")[0];
 const showSelectedParent = I("#showSelectedParent")[0];
 
 
-I(".profiles .toggle").click((_, i) => {
-   I(".profiles")[i].toggle("active");
+I(".toggle").click((_, i) => {
+   I(".marge")[i].toggle("active");
 });
 
 const getInputDelay = () => {
@@ -193,6 +193,13 @@ I("#executeUserToggle").click(() => {
    setDataFromLocalStorage(STORAGE_KEY, savedData);
 });
 
+I("#settingsToggle").click(() => {
+   const is = settings.classList.contains("active");
+   const savedData = getDataFromLocalStorage(STORAGE_KEY);
+   savedData.isOpenSettings = is;
+   setDataFromLocalStorage(STORAGE_KEY, savedData);
+});
+
 I(".inc-dec .in-de").click(async (_, __, e) => {
    if (LOCAL_SAVED.numOfExecute !== I("#executeLimit").value) {
       e.parentNode.parentNode.parentNode.classList.add("not-updated");
@@ -226,7 +233,7 @@ selectAllExe.click((_, __, ele) => {
    selectProfiles(profiles, isChecked);
 });
 
-I("#executeAllButton").click(updateExecuteLimit);
+I("#updateLimitBtn").click(updateExecuteLimit);
 I("#reloadBtn").click(reloadSelectedProfiles);
 I("#stopBtn").click(stopSelectedProfiles);
 I("#updateButton").click(updateAllProfilesSettings);

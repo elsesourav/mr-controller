@@ -32,6 +32,8 @@
    <script defer src="./js/backUtils.js"></script>
    <script defer src="./js/profiles.js"></script>
    <script defer src="./js/control.js"></script>
+   <script defer src="./js/graph.js"></script>
+   <script defer src="./js/status.js"></script>
    <script defer src="./js/back.js"></script>
 </head>
 
@@ -56,11 +58,11 @@
    <nav>
       <div class="options">
          <div class="btn">
-            <input type="radio" name="btn" id="control" class="option-btn" checked value="CONTROL" />
+            <input type="radio" name="btn" id="control" class="option-btn" value="CONTROL" />
             <label for="btn">CONTROL</label>
          </div>
          <div class="btn">
-            <input type="radio" name="btn" id="status" class="option-btn" value="STATUS" />
+            <input type="radio" name="btn" id="status" class="option-btn" checked value="STATUS" />
             <label for="btn">STATUS</label>
          </div>
          <div class="btn">
@@ -74,7 +76,7 @@
                                     Control
       -------------------------------------------------------------- -->
    <div class="control-section">
-      <div id="normalProfiles" class="profiles">
+      <div id="normalProfiles" class="marge">
          <div class="select-users">
             <div class="checkbox">
                <div class="cover">
@@ -96,12 +98,15 @@
             </div>
 
             <div class="selected result" id="selectedResultN">0</div>
+
             <div class="selected btn" id="executedSelectedAll">
                <p>RUN</p>
                <i class="sbi-select-all"></i>
             </div>
+            
             <div id="allUsersToggle" class="toggle">
                <i class="sbi-chevron-down"></i>
+               <div id="showNormalProfilesSize" class="count">0</div>
             </div>
          </div>
          <div class="scroll normal" id="scrollNormal"></div>
@@ -111,10 +116,10 @@
 
       <section>
          <div class="basic-grid">
-            <div class="take-inp two-input one-line">
-               <section>
+            <div class="take-inp two-input one-line limit-inp">
+               <section class="execute-limit">
                   <div class="take-num inc-dec">
-                     <p>RUN</p>
+                     <p>EXECUTIONS</p>
                      <div class="inp">
                         <button class="dec in-de">
                            <i class="sbi-minus-square"></i>
@@ -125,14 +130,14 @@
                         </button>
                      </div>
                   </div>
-                  <div id="executeAllButton"><i class="sbi-arrow-up1"></i></div>
+                  <div id="updateLimitBtn"><i class="sbi-arrow-up1"></i></div>
                </section>
             </div>
          </div>
       </section>
       <br />
 
-      <div id="executeProfiles" class="profiles execute">
+      <div id="executeProfiles" class="marge execute">
          <div class="select-users">
             <div class="checkbox">
                <div class="cover">
@@ -144,13 +149,14 @@
             </div>
 
             <div class="selected result" id="selectedResultE">0</div>
-            <div class="selected btn" id="killApp">KILL APP</div>
+            <div class="selected btn" id="killApp">KILL</div>
             <div class="selected btn" id="closeExecuted">
                <p>CLOSE</p>
                <i class="sbi-select-all"></i>
             </div>
             <div id="executeUserToggle" class="toggle">
                <i class="sbi-chevron-down"></i>
+               <div id="showExecuteProfilesSize" class="count">0</div>
             </div>
          </div>
          <div class="scroll execute" id="scrollExecute"></div>
@@ -163,179 +169,195 @@
 
       <span class="br-tag"></span>
 
-      <div class="controls">
-         <section class="main">
-            <div class="basic-grid">
-               <div class="take-inp only-switch">
-                  <span>Auto Complete</span>
-                  <input type="checkbox" name="auto_complete" id="autoComplete" class="inp-checkbox" />
-               </div>
+      <div id="settings" class="marge settings">
+         <div class="select-users">
+            <div class="name">SETTINGS</div>
+            <div id="settingsToggle" class="toggle">
+               <i class="sbi-chevron-down"></i>
             </div>
+         </div>
 
-            <span class="br-tag"></span>
-
-            <div class="basic-grid auto auto-complete-inputs">
-               <div class="take-inp only-switch" style="--d: 0ms">
-                  <span>PC Search</span>
-                  <input type="checkbox" name="auto_pc_search" id="autoPcSearch" class="inp-checkbox" checked />
+         <div class="controls" id="settingsControls">
+            <section class="main">
+               <div class="basic-grid">
+                  <div class="take-inp only-switch">
+                     <span>Auto Complete</span>
+                     <input type="checkbox" name="auto_complete" id="autoComplete" class="inp-checkbox" />
+                  </div>
                </div>
-               <div class="take-inp only-switch" style="--d: 1ms">
-                  <span>Mobile Search</span>
-                  <input type="checkbox" name="auto_mobile_search" id="autoMobileSearch" class="inp-checkbox" checked />
+   
+               <span class="br-tag"></span>
+   
+               <div class="basic-grid auto auto-complete-inputs">
+                  <div class="take-inp only-switch" style="--d: 0ms">
+                     <span>PC Search</span>
+                     <input type="checkbox" name="auto_pc_search" id="autoPcSearch" class="inp-checkbox" checked />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 1ms">
+                     <span>Mobile Search</span>
+                     <input type="checkbox" name="auto_mobile_search" id="autoMobileSearch" class="inp-checkbox" checked />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 2ms">
+                     <span>Daily Event</span>
+                     <input type="checkbox" name="auto_daily_event" id="autoDailyEvent" class="inp-checkbox" checked />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 3ms">
+                     <span>Banner Event</span>
+                     <input type="checkbox" name="auto_banner_event" id="autoBannerEvent" class="inp-checkbox" checked />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 4ms">
+                     <span>Recheck at Last</span>
+                     <input type="checkbox" name="auto_recheck" id="autoRecheck" class="inp-checkbox" checked />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 5ms">
+                     <span>Auto Start</span>
+                     <input type="checkbox" name="auto_start" id="autoStart" class="inp-checkbox" checked />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 6ms">
+                     <span>Auto Close</span>
+                     <input type="checkbox" name="auto_close" id="autoClose" class="inp-checkbox" checked />
+                  </div>
                </div>
-               <div class="take-inp only-switch" style="--d: 2ms">
-                  <span>Daily Event</span>
-                  <input type="checkbox" name="auto_daily_event" id="autoDailyEvent" class="inp-checkbox" checked />
-               </div>
-               <div class="take-inp only-switch" style="--d: 3ms">
-                  <span>Banner Event</span>
-                  <input type="checkbox" name="auto_banner_event" id="autoBannerEvent" class="inp-checkbox" checked />
-               </div>
-               <div class="take-inp only-switch" style="--d: 4ms">
-                  <span>Recheck at Last</span>
-                  <input type="checkbox" name="auto_recheck" id="autoRecheck" class="inp-checkbox" checked />
-               </div>
-               <div class="take-inp only-switch" style="--d: 5ms">
-                  <span>Auto Start</span>
-                  <input type="checkbox" name="auto_start" id="autoStart" class="inp-checkbox" checked />
-               </div>
-               <div class="take-inp only-switch" style="--d: 6ms">
-                  <span>Auto Close</span>
-                  <input type="checkbox" name="auto_close" id="autoClose" class="inp-checkbox" checked />
-               </div>
-            </div>
-
-            <div class="basic-grid auto manually-search-inputs">
-               <div class="take-inp two-input one-line" style="--d: 0ms">
-                  <section>
-                     <div class="take-num">
-                        <p>PC Search</p>
-                        <div class="inp">
-                           <button class="dec">
-                              <i class="sbi-minus-square"></i>
-                           </button>
-                           <input value="10" type="number" name="pc_search_limit" inputmode="numeric" id="pcLimit"
-                              class="inp-limit" />
-                           <button class="inc">
-                              <i class="sbi-plus-square"></i>
-                           </button>
+   
+               <div class="basic-grid auto manually-search-inputs">
+                  <div class="take-inp two-input one-line" style="--d: 0ms">
+                     <section>
+                        <div class="take-num">
+                           <p>PC Search</p>
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input value="10" type="number" name="pc_search_limit" inputmode="numeric" id="pcLimit"
+                                 class="inp-limit" />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
                         </div>
-                     </div>
-                     <input type="checkbox" name="pc_search" id="pcSearch" class="inp-checkbox num" />
-                  </section>
-               </div>
-               <div class="take-inp two-input one-line" style="--d: 1ms">
-                  <section>
-                     <div class="take-num">
-                        <p>Mobile Search</p>
-                        <div class="inp">
-                           <button class="dec">
-                              <i class="sbi-minus-square"></i>
-                           </button>
-                           <input value="10" type="number" name="mobile_search_limit" inputmode="numeric"
-                              id="mobileLimit" class="inp-limit" />
-                           <button class="inc">
-                              <i class="sbi-plus-square"></i>
-                           </button>
+                        <input type="checkbox" name="pc_search" id="pcSearch" class="inp-checkbox num" />
+                     </section>
+                  </div>
+                  <div class="take-inp two-input one-line" style="--d: 1ms">
+                     <section>
+                        <div class="take-num">
+                           <p>Mobile Search</p>
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input value="10" type="number" name="mobile_search_limit" inputmode="numeric"
+                                 id="mobileLimit" class="inp-limit" />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
                         </div>
-                     </div>
-                     <input type="checkbox" name="mobile_search" id="mobileSearch" class="inp-checkbox num" />
-                  </section>
-               </div>
-               <div class="take-inp two-input display-none" style="--d: 2ms">
-                  <span>Mobile Search</span>
-                  <section>
-                     <div class="take-num">
-                        <p>Limit</p>
-                        <div class="inp">
-                           <button class="dec">
-                              <i class="sbi-minus-square"></i>
-                           </button>
-                           <input value="0" type="number" name="mobile_search_limit" inputmode="numeric"
-                              id="mobileLimit" class="inp-limit" />
-                           <button class="inc">
-                              <i class="sbi-plus-square"></i>
-                           </button>
+                        <input type="checkbox" name="mobile_search" id="mobileSearch" class="inp-checkbox num" />
+                     </section>
+                  </div>
+                  <div class="take-inp two-input display-none" style="--d: 2ms">
+                     <span>Mobile Search</span>
+                     <section>
+                        <div class="take-num">
+                           <p>Limit</p>
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input value="0" type="number" name="mobile_search_limit" inputmode="numeric"
+                                 id="mobileLimit" class="inp-limit" />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
                         </div>
-                     </div>
-                     <input type="checkbox" name="mobile_search" id="mobileSearch" class="inp-checkbox" />
-                  </section>
+                        <input type="checkbox" name="mobile_search" id="mobileSearch" class="inp-checkbox" />
+                     </section>
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 3ms">
+                     <span>Daily Event</span>
+                     <input type="checkbox" name="daily_event" id="dailyEvent" class="inp-checkbox" />
+                  </div>
+                  <div class="take-inp only-switch" style="--d: 4ms">
+                     <span>Banner Event</span>
+                     <input type="checkbox" name="banner_event" id="bannerEvent" class="inp-checkbox" />
+                  </div>
                </div>
-               <div class="take-inp only-switch" style="--d: 3ms">
-                  <span>Daily Event</span>
-                  <input type="checkbox" name="daily_event" id="dailyEvent" class="inp-checkbox" />
-               </div>
-               <div class="take-inp only-switch" style="--d: 4ms">
-                  <span>Banner Event</span>
-                  <input type="checkbox" name="banner_event" id="bannerEvent" class="inp-checkbox" />
-               </div>
-            </div>
-
-            <span class="br-tag"></span>
-
-            <div class="basic-grid fixed">
-               <div class="take-inp one two-input">
-                  <span>Search Delay</span>
-                  <section>
-                     <div class="take-num">
-                        <div class="inp">
-                           <button class="dec">
-                              <i class="sbi-minus-square"></i>
-                           </button>
-                           <input value="6" type="number" name="search_delay_limit" inputmode="numeric"
-                              id="searchDelayLimit" class="inp-limit" />
-                           <button class="inc">
-                              <i class="sbi-plus-square"></i>
-                           </button>
+   
+               <span class="br-tag"></span>
+   
+               <div class="basic-grid fixed">
+                  <div class="take-inp one two-input">
+                     <span>Search Delay</span>
+                     <section>
+                        <div class="take-num">
+                           <div class="inp">
+                              <button class="dec">
+                                 <i class="sbi-minus-square"></i>
+                              </button>
+                              <input value="6" type="number" name="search_delay_limit" inputmode="numeric"
+                                 id="searchDelayLimit" class="inp-limit" />
+                              <button class="inc">
+                                 <i class="sbi-plus-square"></i>
+                              </button>
+                           </div>
                         </div>
-                     </div>
-                  </section>
-               </div>
-               <div class="take-inp one two-input">
-                  <span>If !Search Wait</span>
-                  <section>
-                     <div class="take-num">
-                        <div class="inp">
-                           <button class="dec"><i class="sbi-minus-square"></i></button>
-                           <input value="900" type="number" name="not_search_delay_limit" inputmode="numeric"
-                              id="notSearchDelay" class="inp-limit multi">
-                           <button class="inc"><i class="sbi-plus-square"></i></button>
+                     </section>
+                  </div>
+                  <div class="take-inp one two-input">
+                     <span>If !Search <i class="sbi-timer"></i></span>
+                     <section>
+                        <div class="take-num">
+                           <div class="inp">
+                              <button class="dec"><i class="sbi-minus-square"></i></button>
+                              <input value="900" type="number" name="not_search_delay_limit" inputmode="numeric"
+                                 id="notSearchDelay" class="inp-limit multi">
+                              <button class="inc"><i class="sbi-plus-square"></i></button>
+                           </div>
                         </div>
-                     </div>
-                  </section>
+                     </section>
+                  </div>
                </div>
-            </div>
-
-            <span class="br-tag"></span>
-
-            <div class="btn">
-               <button id="updateButton">UPDATE</button>
-            </div>
-
-            <span class="br-tag"></span>
-
-            <div class="buttons">
-               <div id="reloadBtn" class="btn">
-                  <p>RELOAD</p>
-                  <i class="sbi-refresh"></i>
+   
+               <span class="br-tag"></span>
+   
+               <div class="btn">
+                  <button id="updateButton">UPDATE</button>
                </div>
-               <div id="stopBtn" class="btn">
-                  <p>STOP</p>
-                  <i class="sbi-stop"></i>
+   
+               <span class="br-tag"></span>
+   
+               <div class="buttons">
+                  <div id="reloadBtn" class="btn">
+                     <p>RELOAD</p>
+                     <i class="sbi-refresh"></i>
+                  </div>
+                  <div id="stopBtn" class="btn">
+                     <p>STOP</p>
+                     <i class="sbi-stop"></i>
+                  </div>
                </div>
-            </div>
-
-         </section>
-
+   
+               <span class="br-tag"></span>
+            </section>
+         </div>
+         <span class="gap"></span>
       </div>
-      <span class="gap"></span>
+
    </div>
 
    <!-- -------------------------------------------------------------
                                     Status
       -------------------------------------------------------------- -->
    <div class="status-section">
-      <h1>Status Section</h1>
+      <div class="marge graph">
+         <div class="scroll" id="scrollGraph"></div>
+      </div>
+      <div class="container" id="CONTAINER">
+         <div id="graphViewerName"></div>
+         <canvas id="CANVAS"></canvas>
+      </div>
    </div>
 
    <!-- -------------------------------------------------------------

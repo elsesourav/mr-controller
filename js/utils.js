@@ -9,6 +9,7 @@ const STORAGE_KEY = "mr-container-storage";
 const LOCAL_SAVED = {
    isOpenAllUsers: true,
    isOpenExecuteUsers: true,
+   isOpenSettings: false,
    numOfExecute: 6,
    username: undefined,
    reload_ID: 1729814979947,
@@ -70,6 +71,14 @@ function getDataFromLocalStorage(key) {
 function reloadLocation() {
    window.location.reload();
 }
+
+/* e.x 
+(0 start) -------.------ (10 end) input . = 5
+(10 min) ----------------.---------------- (30 max) output . = 20
+*/
+const map = (point, start, end, min, max) => {
+   return ((max - min) * (point - start)) / (end - start) + min;
+};
 
 function setDataToLocalStorage(key, object, fun = () => { }) {
    return new Promise((resolve) => {

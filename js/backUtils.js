@@ -120,7 +120,8 @@ async function updateAllProfilesSettings() {
    delete settings.isOpenExecuteUsers;
    delete settings.numOfExecute;
    delete settings.username;
-
+   delete settings.isOpenSettings;
+   
    showLoading();
    for (let i = 0; i < profiles.length; i++) {
       const name = profiles[i];

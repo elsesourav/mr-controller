@@ -33,6 +33,7 @@ header {
       }
 
    }
+
    section {
       position: relative;
       height: 100%;
@@ -41,7 +42,7 @@ header {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      
+
       p {
          font-family: f1b;
          font-size: calc(var(--s) * 1.8);
@@ -58,10 +59,12 @@ header {
          .first {
             color: light-dark(#ffe6b0, #553a00);
          }
+
          .second {
             color: #00ffd9;
             color: light-dark(#c3fff6, #006758);
          }
+
          i,
          .year {
             font-size: calc(var(--s) * 1.2);
@@ -69,6 +72,7 @@ header {
             display: grid;
             align-items: center;
          }
+
          .year {
             align-items: end;
          }
@@ -102,7 +106,7 @@ nav {
          border: solid 1px light-dark(#0004, #fff4);
          text-align: center;
          transition: background-color 300ms, color 300ms;
-         
+
          .option-btn {
             position: absolute;
             width: 100%;
@@ -115,7 +119,7 @@ nav {
             -ms-progress-appearance: none;
             cursor: var(--cursor);
          }
-         
+
          label {
             font-family: f1b;
          }
@@ -142,15 +146,16 @@ nav {
       transition: left 300ms;
    }
 
-   &:has( .options .btn:nth-child(2) input[type="radio"]:checked)::before {
+   &:has(.options .btn:nth-child(2) input[type="radio"]:checked)::before {
       left: 33.33%;
    }
-   &:has( .options .btn:nth-child(3) input[type="radio"]:checked)::before {
+
+   &:has(.options .btn:nth-child(3) input[type="radio"]:checked)::before {
       left: 66.66%;
    }
 }
 
-.profiles {
+.marge {
    position: relative;
    width: 100%;
    display: grid;
@@ -161,13 +166,30 @@ nav {
    border-radius: 8px;
    transition: linear height 300ms;
 
+   &.graph {
+      height: var(--users-h);
+      grid-template-rows: auto;
+      background-color: light-dark(#dadffd, #2a2c38);
+   }
+
+   &.settings {
+      background-color: light-dark(#dadffd, #2a2c38);
+   }
+
    &.execute {
       background-color: light-dark(#ffdcc6, #40322a);
    }
 
    &.active {
       height: var(--users-h);
-      grid-template-rows: var(--users-header-h) auto;
+
+      &.settings {
+         height: auto;
+      }
+   }
+
+   &.settings .select-users {
+      justify-content: flex-end;
    }
 
    .select-users {
@@ -179,12 +201,21 @@ nav {
       justify-content: space-between;
       align-items: center;
 
-      & > div {
+      &>div {
          position: relative;
          display: flex;
          justify-content: center;
          align-items: center;
          gap: 5px;
+      }
+
+      .name {
+         position: absolute;
+         left: 50%;
+         top: 50%;
+         transform: translate(-50%, -50%);
+         font-family: f1b;
+         font-size: calc(var(--s) * 1.8);
       }
 
       .checkbox {
@@ -200,7 +231,7 @@ nav {
             display: flex;
             justify-content: center;
             align-items: center;
-            
+
             .all {
                position: relative;
                font-size: calc(var(--s) * 2);
@@ -208,19 +239,21 @@ nav {
                opacity: 0.4;
                transition: 200ms opacity;
                cursor: var(--cursor);
-      
+
                &.green {
                   color: #ff0000;
                }
             }
+
             input {
-               
-               &:checked ~ label .all {
+
+               &:checked~label .all {
                   opacity: 1;
-               } 
+               }
             }
 
          }
+
          .reference {
             position: relative;
             width: 100%;
@@ -250,6 +283,23 @@ nav {
          border-radius: 50%;
          display: grid;
          place-items: center;
+
+         .count {
+            position: absolute;
+            width: 70%;
+            height: 50%;
+            border-radius: calc(var(--s) * 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            top: calc(var(--s) * -0.6);
+            background-color: light-dark(#000, #fff);
+            font-family: f5b;
+            font-size: calc(var(--s) * 1.2);
+            z-index: 2;
+            pointer-events: none;
+         }
       }
 
       .btn {
@@ -276,133 +326,167 @@ nav {
          }
       }
    }
+}
 
-   .scroll {
+.scroll {
+   position: relative;
+   width: 100%;
+   height: auto;
+   display: flex;
+   flex-direction: column;
+   padding: 5px 0;
+   gap: 5px;
+   overflow: hidden;
+   overflow-y: scroll;
+
+   &#scrollGraph {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-flow: row;
+      column-gap: 0;
+   }
+
+
+   .profile {
+      --m: 5px;
       position: relative;
-      width: 100%;
-      height: auto;
-      display: flex;
-      flex-direction: column;
-      padding: 5px 0;
-      gap: 5px;
-      overflow: hidden;
-      overflow-y: scroll;
+      width: calc(100% - var(--m) * 2);
+      display: grid;
+      margin-top: var(--m);
+      margin-left: var(--m);
+      background-color: light-dark(#0002, #fff2);
+      padding: calc(var(--m) * 2);
+      border-radius: 5px;
+      grid-template-columns: 7fr 4fr 5fr 2fr 4fr;
+      gap: 2px;
 
-      .profile {
-         --m: 5px;
-         position: relative;
-         width: calc(100% - var(--m) * 2);
-         display: grid;
-         margin-top: var(--m);
-         margin-left: var(--m);
+      &.view {
+         grid-template-columns: 7fr 4fr;
+      }
+
+      &:nth-child(even) {
+         background-color: light-dark(#0003, #fff3);
+      }
+
+      &.hide {
+         display: none;
+      }
+
+      &.running {
+         background-color: #ff760c;
+      }
+
+      input[type="checkbox"] {
+         position: absolute;
+         z-index: 2;
+         width: 100%;
+         height: 100%;
+         appearance: none;
+         -moz-appearance: none;
+         -webkit-appearance: none;
+         -ms-progress-appearance: none;
+         cursor: grab;
+      }
+
+      &:has(input[type="checkbox"]:checked)::after {
+         content: "";
+         position: absolute;
+         width: 100%;
+         height: 100%;
+         left: 0;
+         top: 0;
+         box-sizing: border-box;
          background-color: light-dark(#0002, #fff2);
-         padding: calc(var(--m) * 2);
-         border-radius: 5px;
-         grid-template-columns: 7fr 4fr 5fr 2fr 4fr;
-         gap: 2px;
-         
-         &:nth-child(even) {
-            background-color: light-dark(#0003, #fff3);
-         }
-         
-         &.hide {
-            display: none;
-         }
-         
-         &.running {
-            background-color: #ff760c;
-         }
-         
-         input[type="checkbox"] {
-            position: absolute;
-            z-index: 2;
-            width: 100%;
-            height: 100%;
-            appearance: none;
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            -ms-progress-appearance: none;
-            cursor: grab;
-         }
+         border: solid 1px light-dark(#fff, #000);
+         outline: solid 2px light-dark(#000, #fff);
+         border-radius: inherit;
+      }
 
-         &:has(input[type="checkbox"]:checked)::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            box-sizing: border-box;
-            background-color: light-dark(#0002, #fff2);
-            border: solid 1px light-dark(#fff, #000);
-            outline: solid 2px light-dark(#000, #fff);
-            border-radius: inherit;
-         }
+      .no {
+         position: absolute;
+         font-family: f6b;
+         top: 0;
+         left: 0;
+         padding: 1px 5px;
+         display: grid;
+         font-size: 12px;
+         border-top-left-radius: 5px;
+         border-bottom-right-radius: 5px;
+         place-items: center;
+         background-color: light-dark(#fff, #000);
+      }
 
-         .no {
-            position: absolute;
-            font-family: f6b;
-            top: 0;
-            left: 0;
-            padding: 1px 5px;
-            display: grid;
-            font-size: 12px;
-            border-top-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-            place-items: center;
-            background-color: light-dark(#fff, #000);
-         }
+      .point,
+      .today,
+      i {
+         position: relative;
+         width: 100%;
+         min-height: calc(var(--s) * 1.9);
+         display: flex;
+         justify-content: flex-start;
+         align-items: center;
+         font-size: calc(var(--s));
+         gap: 5px;
+      }
 
-         .point,
-         .today,
+      span {
+         font-family: f2b;
+      }
+
+      i {
+         font-size: calc(var(--s) * 1.4);
+         color: #ff0000;
+         transition: 300ms color;
+      }
+
+      &.complete i {
+         color: #0f0;
+      }
+
+      &.view {
          i {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: calc(var(--s));
-            gap: 5px;
-         }
-         span {
-            font-family: f2b;
-         }
-         i {
-            font-size: calc(var(--s) * 1.4);
-            color: #ff0000;
-            transition: 300ms color;
+            position: absolute;
+            border-radius: 0 5px 5px 0;
+            right: 0;
+            top: 0;
+            width: calc(var(--s) * 0.3);
+            height: 100%;
+            background-color: #ff0000;
          }
          &.complete i {
-            color: #0f0;
+            background-color: #0f0;
          }
-         .name {
-            position: relative;
-            display: inline-block;
-            margin: auto;
-            white-space: nowrap;
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-         }
+      }
 
-         .exe-clo {
-            position: relative;
-            width: 100%;
-            display: grid;
-            place-items: center;
-            padding: 6px 5px;
-            z-index: 4;
+      .name {
+         position: relative;
+         width: 100%;
+         display: inline-block;
+         margin: auto;
+         white-space: nowrap;
+         width: 100%;
+         overflow: hidden;
+         text-overflow: ellipsis;
+      }
 
-            border-radius: 6px;
-            background-color: light-dark(#fff, #000);
-            color: light-dark(#000, #fff);
-            text-align: center;
-            transition: background-color 300ms, color 300ms;
-            cursor: var(--cursor);
+      .exe-clo {
+         position: relative;
+         width: 100%;
+         display: grid;
+         place-items: center;
+         padding: 6px 5px;
+         z-index: 4;
 
-            &:active {
-               background-color: light-dark(#000, #fff);
-               color: light-dark(#fff, #000);
-            }
+         border-radius: 6px;
+         background-color: light-dark(#fff, #000);
+         color: light-dark(#000, #fff);
+         text-align: center;
+         transition: background-color 300ms, color 300ms;
+         cursor: var(--cursor);
+
+         &:active {
+            background-color: light-dark(#000, #fff);
+            color: light-dark(#fff, #000);
          }
       }
    }
@@ -413,7 +497,9 @@ nav {
 @keyframes float {
    0% {
       transform: translateY(calc(var(--s) * -0.2)) rotateY(0deg);
-   } 50% {
+   }
+
+   50% {
       transform: translateY(calc(var(--s) * 0.4)) rotateY(10deg);
    }
 }

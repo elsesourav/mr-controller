@@ -1,10 +1,10 @@
 /*  for open close toggle */
-.profiles.active .toggle i {
+.marge.active .toggle i {
    transform: rotateX(180deg);
 }
 
 /* checkbox input */
-.profiles .checkbox [type="checkbox"] {
+.marge .checkbox [type="checkbox"] {
    margin: 0;
    width: 0;
    height: 0;
@@ -13,24 +13,24 @@
    -moz-appearance: none;
    appearance: none;
 }
-.profiles .checkbox label {
+.marge .checkbox label {
    position: absolute;
    font-size: calc(var(--s) * 1.1);
    display: grid;
    place-items: center;
    cursor: var(--cursor);
 }
-.profiles .selected {
+.marge .selected {
    font-size: calc(var(--s) * 1.2);
 }
-.profiles .toggle i {
+.marge .toggle i {
    cursor: var(--cursor);
    font-size: calc(var(--s) * 1.3);
    transform: rotateX(0deg);
    transition: transform 200ms ease-in-out;
 }
 
-.profiles .checkbox [type="checkbox"] + label:before {
+.marge .checkbox [type="checkbox"] + label:before {
    content: "";
    position: absolute;
    display: inline-block;
@@ -49,47 +49,47 @@
    transition: color 0.1s, border 0.1s, background 0.15s, box-shadow 0.1s;
    z-index: 5;
 }
-.profiles .checkbox [type="checkbox"]:enabled:active + label:before,
-.profiles .checkbox [type="checkbox"]:enabled + label:active:before {
+.marge .checkbox [type="checkbox"]:enabled:active + label:before,
+.marge .checkbox [type="checkbox"]:enabled + label:active:before {
    box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset,
       0 0 0 0.07em rgba(0, 0, 0, 0.1) inset;
    background-color: #f0f0f0;
 }
-.profiles .checkbox [type="checkbox"]:checked + label:before {
+.marge .checkbox [type="checkbox"]:checked + label:before {
    background-color: #3b99fc;
    background-size: 0.4em;
    color: rgba(0, 0, 0, 0.075);
 }
-.profiles .checkbox [type="checkbox"]:checked:enabled:active + label:before,
-.profiles .checkbox [type="checkbox"]:checked:enabled + label:active:before {
+.marge .checkbox [type="checkbox"]:checked:enabled:active + label:before,
+.marge .checkbox [type="checkbox"]:checked:enabled + label:active:before {
    background-color: #0a7ffb;
    color: rgba(0, 0, 0, 0.275);
 }
-.profiles .checkbox [type="checkbox"]:disabled + label:before {
+.marge .checkbox [type="checkbox"]:disabled + label:before {
    opacity: 0.5;
 }
 
-.profiles .checkbox [type="checkbox"].dark + label:before {
+.marge .checkbox [type="checkbox"].dark + label:before {
    color: rgba(255, 255, 255, 0.275);
    background-color: #222;
    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve" fill="rgba(34, 34, 34, 0.999)" viewBox="0 0 9 9"><rect x="0" y="4.3" transform="matrix(-0.707 -0.7072 0.7072 -0.707 0.5891 10.4702)" width="4.3" height="1.6" /><rect x="2.2" y="2.9" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 12.1877 2.9833)" width="6.1" height="1.7" /></svg>');
 }
-.profiles .checkbox [type="checkbox"].dark:enabled:active + label:before,
-.profiles .checkbox [type="checkbox"].dark:enabled + label:active:before {
+.marge .checkbox [type="checkbox"].dark:enabled:active + label:before,
+.marge .checkbox [type="checkbox"].dark:enabled + label:active:before {
    background-color: #444;
    box-shadow: 0 0 0.04em, 0 0.06em 0.16em -0.03em transparent inset,
       0 0 0 0.07em rgba(255, 255, 255, 0.1) inset;
 }
-.profiles .checkbox [type="checkbox"].dark:checked + label:before {
+.marge .checkbox [type="checkbox"].dark:checked + label:before {
    background-color: #a97035;
    color: rgba(255, 255, 255, 0.075);
 }
-.profiles .checkbox [type="checkbox"].dark:checked:enabled:active + label:before,
-.profiles .checkbox [type="checkbox"].dark:checked:enabled + label:active:before {
+.marge .checkbox [type="checkbox"].dark:checked:enabled:active + label:before,
+.marge .checkbox [type="checkbox"].dark:checked:enabled + label:active:before {
    background-color: #c68035;
    color: rgba(0, 0, 0, 0.275);
 }
-.profiles .checkbox [type="checkbox"] + label {
+.marge .checkbox [type="checkbox"] + label {
    -webkit-user-select: none;
    user-select: none;
 }

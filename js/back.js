@@ -34,6 +34,7 @@ async function setup() {
 
    I("#normalProfiles").toggle("active", DATA.isOpenAllUsers);
    I("#executeProfiles").toggle("active", DATA.isOpenExecuteUsers);
+   I("#settings").toggle("active", DATA.isOpenSettings);
    I("#executeLimit")[0].value = DATA.numOfExecute;
    LOCAL_SAVED.numOfExecute = DATA.numOfExecute;
 
@@ -43,7 +44,7 @@ async function setup() {
    await profileNamesRef.get().then((snapshot) => {
       if (snapshot.exists()) {
          const names = snapshot.val();
-         manageProfiles = new ManageProfiles(names, scrollNormal, scrollExecute, showSelectedParent);
+         manageProfiles = new ManageProfiles(names, scrollNormal, scrollExecute, showSelectedParent, scrollGraph);
       }
    });
 

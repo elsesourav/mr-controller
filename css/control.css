@@ -13,8 +13,8 @@ section {
    align-items: center;
    animation: opacity linear 400ms;
 
-   &:not(:has( #autoComplete:checked)) .auto.manually-search-inputs,
-   &:has( #autoComplete:checked) .auto.auto-complete-inputs {
+   &:not(:has(#autoComplete:checked)) .auto.manually-search-inputs,
+   &:has(#autoComplete:checked) .auto.auto-complete-inputs {
       display: grid;
       opacity: 1;
 
@@ -22,7 +22,7 @@ section {
          opacity: 0;
       }
 
-      & > * {
+      &>* {
          opacity: 1;
 
          @starting-style {
@@ -31,14 +31,14 @@ section {
       }
    }
 
-   & > .btn {
+   &>.btn {
       position: relative;
       width: 100%;
       height: calc(var(--s) * 4);
       padding: var(--p);
       display: grid;
       place-items: center;
-      
+
       button#updateButton {
          position: relative;
          width: 100%;
@@ -55,7 +55,7 @@ section {
          cursor: var(--cursor);
          transition: 200ms color, 200ms background, 200ms border;
 
-         
+
          &:active {
             background: light-dark(var(--white), var(--black));
             color: light-dark(var(--black), var(--white));
@@ -65,7 +65,7 @@ section {
 
    }
 
-   & > .buttons {
+   &>.buttons {
       position: relative;
       width: 100%;
       display: flex;
@@ -105,6 +105,7 @@ section {
       }
    }
 }
+
 .basic-grid {
    position: relative;
    width: 100%;
@@ -120,7 +121,7 @@ section {
       display: none;
       opacity: 0;
 
-      & > * {
+      &>* {
          opacity: 0;
          transition-duration: 100ms;
          transition-property: overlay opacity;
@@ -131,8 +132,10 @@ section {
 }
 
 .take-inp {
+   --p: var(--s) / 2;
    position: relative;
-   width: 100%;
+   width: calc(100% - var(--p) * 2);
+   padding: var(--p);
    height: calc(var(--s) * 5.8);
    border-radius: calc(var(--s) / 4);
    outline: solid 1px #0001;
@@ -141,6 +144,11 @@ section {
    grid-template-columns: 1fr;
    grid-template-rows: 10fr 14fr;
    place-items: center;
+
+   &.limit-inp {
+      background: transparent;
+      outline: none;
+   }
 
    &.only-switch {
       height: calc(var(--s) * 3.5);
@@ -163,6 +171,7 @@ section {
 
          .take-num {
             grid-template-columns: 10fr 10fr;
+
             p {
                position: relative;
                width: 100%;
@@ -188,7 +197,7 @@ section {
       grid-template-columns: 10fr 7fr;
       height: calc(var(--s) * 3.5);
 
-      & > span {
+      &>span {
          width: 100%;
          padding: 0 calc(var(--s) / 1.5);
       }
@@ -217,6 +226,13 @@ section {
       display: grid;
       grid-template-columns: 7fr 3fr;
       place-items: center;
+
+      &.execute-limit {
+         width: 100%;
+         height: 80%;
+         background: transparent;
+         outline: solid 1px light-dark(#bbb, #444);
+      }
 
       .take-num {
          position: relative;
@@ -311,6 +327,7 @@ section {
                   color: #00ff40;
                   scale: 1.05;
                }
+
                &.dec:active {
                   color: #ff0000;
                   scale: 1.05;
@@ -319,7 +336,7 @@ section {
          }
       }
 
-      #executeAllButton {
+      #updateLimitBtn {
          position: relative;
          width: calc(var(--s) * 3);
          height: calc(var(--s) * 2);
@@ -331,7 +348,14 @@ section {
          background: light-dark(#000, #fff);
          transition: 200ms color;
       }
-      
+
+      &.not-updated {
+         cursor: var(--cursor);
+
+         #updateLimitBtn {
+            color: #f00;
+         }
+      }
    }
 
    &.only-inc-dec {
