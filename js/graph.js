@@ -239,7 +239,6 @@ class Graph {
    }
 
    #showDataPointDiv(event, dataValue) {
-      console.log(event, dataValue);
       
       showGraphData.classList.add("active");
       if (this.isProfiles) {
