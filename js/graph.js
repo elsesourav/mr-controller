@@ -15,20 +15,20 @@ class Graph {
 
    setup(data, isProfiles = false) {
       this.isProfiles = isProfiles;
+      this.originalData = [...data];
       let modifiedData = [...data];
       if (!isProfiles) {
          if (this.range === "week") {
-            modifiedData = modifiedData.slice(0, 7);
+            modifiedData = modifiedData.slice(-7);
          } else if (this.range === "month") {
-            modifiedData = modifiedData.slice(0, 30);
+            modifiedData = modifiedData.slice(-30);
          } else if (this.range === "year") {
-            modifiedData = modifiedData.slice(0, 365);
+            modifiedData = modifiedData.slice(-365);
          }
       } else {
          modifiedData.sort((a, b) => b.total - a.total);
       }
       this.data = modifiedData;
-      this.originalData = [...data];
       this.totals = modifiedData.map(e => e.total);
       
       this.highlightedIndex = null;
