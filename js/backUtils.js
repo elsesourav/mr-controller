@@ -104,7 +104,6 @@ async function resetAgent() {
    setDataFromLocalStorage(STORAGE_KEY, DATA);
    const profiles = getSelectedProfileNames();
    
-
    showLoading();
    for (let i = 0; i < profiles.length; i++) {
       const name = profiles[i];
