@@ -96,6 +96,24 @@ async function stopSelectedProfiles() {
    hideFloatingWindow();
 }
 
+async function resetAgent() {
+   const DATA = getDataFromLocalStorage(STORAGE_KEY);
+
+   const settings = { reset_agent_ID: Date.now() };
+   DATA.reset_agent_ID = settings.reset_agent_ID;
+   setDataFromLocalStorage(STORAGE_KEY, DATA);
+   const profiles = getSelectedProfileNames();
+   
+
+   showLoading();
+   for (let i = 0; i < profiles.length; i++) {
+      const name = profiles[i];
+      if (i === profiles.length - 2) await updateProfileSettings(name, settings);
+      else updateProfileSettings(name, settings);
+   }
+   hideFloatingWindow();
+}
+
 async function logoutUser() {
    showAlert(
       {

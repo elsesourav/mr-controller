@@ -87,15 +87,13 @@ section {
          cursor: var(--cursor);
          justify-content: center;
          gap: calc(var(--s));
-         font-size: calc(var(--s) * 1.5);
-         font-weight: 900;
-         font-family: f1b;
+         font-size: calc(var(--s) * 1.8);
          border: solid 2px #000;
-         color: #ff0400;
+         color: #ff7700;
          transition: background 200ms, border 200ms;
 
-         &:last-child {
-            color: #ff7700;
+         &:nth-child(3) {
+            color: #ff0000;
          }
 
          &:active {

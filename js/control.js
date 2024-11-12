@@ -239,6 +239,7 @@ selectAllExe.click((_, __, ele) => {
 I("#updateLimitBtn").click(updateExecuteLimit);
 I("#reloadBtn").click(reloadSelectedProfiles);
 I("#stopBtn").click(stopSelectedProfiles);
+I("#resetAgent").click(resetAgent);
 I("#updateButton").click(updateAllProfilesSettings);
 I(".logout").click(logoutUser);
 I("#killApp").click(killApp);
